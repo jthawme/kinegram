@@ -1,0 +1,35 @@
+$font-size-small: rem(12);
+$font-size-regular: rem(16);
+$font-size-large: rem(24);
+$font-size-x-large: rem(32);
+$font-size-xx-large: rem(48);
+$font-size-xxx-large: rem(64);
+$font-size-xxxx-large: rem(96);
+
+$font-weight-thin: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+$font-family-body: sans-serif;
+$font-family-headline: sans-serif;
+$font-family-mono: monospace;
+
+@mixin _compoundFont($family: $font-family-body, $size: $font-size-regular, $weight: $font-weight-normal) {
+  font: {
+    family: $family;
+    size: $size;
+    weight: $weight;
+  }
+}
+
+@mixin bodyFont($family: $font-family-body, $size: $font-size-regular, $weight: $font-weight-normal) {
+  @include _compoundFont($family, $size, $weight);
+}
+
+@mixin headlineFont($family: $font-family-headline, $size: $font-size-xx-large, $weight: $font-weight-bold) {
+  @include _compoundFont($family, $size, $weight);
+}
+
+@mixin codeFont($family: $font-family-mono, $size: $font-size-regular, $weight: $font-weight-normal) {
+  @include _compoundFont($family, $size, $weight);
+}

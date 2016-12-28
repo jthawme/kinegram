@@ -1,16 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-require('./App.css');
+// 3rd Party Modules
+import classNames from 'classnames';
+
+// Redux
+
+// Components
+
+// CSS, Requires
+require('./App.scss');
 
 class App extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
+    const appCls = classNames(
+      'app'
+    );
+
     return (
-      <div className="app">
-        App
+      <div className={appCls}>
+        <span className="app__el">
+          App
+        </span>
         { this.props.children }
       </div>
     );

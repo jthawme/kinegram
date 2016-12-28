@@ -9,14 +9,14 @@ import classNames from 'classnames';
 // Components
 
 // CSS, Requires
-require('./Home.css');
+require('./Home.scss');
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let homeCls = classNames(
+    const homeCls = classNames(
       'home'
     );
 
