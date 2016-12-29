@@ -44,10 +44,14 @@ module.exports = {
       test: /\.json?$/,
       loader: 'json'
     }, {
+      test: /\.css$/,
+      loader: 'style!css'
+    }, {
       test: /\.scss$/,
-      loaders: [
-        'style', 'css', 'sass', 'postcss'
-      ]
+      loaders: ['style', 'css', 'postcss-loader', 'sass']
     }]
-  }
+  },
+  postcss: [
+    require('autoprefixer')
+  ]
 };

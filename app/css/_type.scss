@@ -1,35 +1,54 @@
-$font-size-small: rem(12);
-$font-size-regular: rem(16);
-$font-size-large: rem(24);
-$font-size-x-large: rem(32);
-$font-size-xx-large: rem(48);
-$font-size-xxx-large: rem(64);
-$font-size-xxxx-large: rem(96);
+@mixin font-size-small() {
+  font-size: rem(12);
+}
+
+@mixin font-size-regular() {
+  font-size: rem(16);
+}
+
+@mixin font-size-large() {
+  font-size: rem(24);
+}
+
+@mixin font-size-x-large() {
+  font-size: rem(32);
+}
+
+@mixin font-size-xx-large() {
+  font-size: rem(48);
+}
+
+@mixin font-size-xxx-large() {
+  font-size: rem(64);
+}
+
+@mixin font-size-xxxx-large() {
+  font-size: rem(96);
+}
 
 $font-weight-thin: 300;
 $font-weight-normal: 400;
 $font-weight-bold: 700;
 
-$font-family-body: sans-serif;
-$font-family-headline: sans-serif;
-$font-family-mono: monospace;
+$font-family-body: 'Work Sans', sans-serif;
+$font-family-headline: 'Playfair Display', sans-serif;
+$font-family-mono: 'Space Mono', monospace;
 
-@mixin _compoundFont($family: $font-family-body, $size: $font-size-regular, $weight: $font-weight-normal) {
+@mixin _compoundFont($family: $font-family-body, $weight: $font-weight-normal) {
   font: {
     family: $family;
-    size: $size;
     weight: $weight;
   }
 }
 
-@mixin bodyFont($family: $font-family-body, $size: $font-size-regular, $weight: $font-weight-normal) {
-  @include _compoundFont($family, $size, $weight);
+@mixin bodyFont($family: $font-family-body, $weight: $font-weight-normal) {
+  @include _compoundFont($family, $weight);
 }
 
-@mixin headlineFont($family: $font-family-headline, $size: $font-size-xx-large, $weight: $font-weight-bold) {
-  @include _compoundFont($family, $size, $weight);
+@mixin headlineFont($family: $font-family-headline, $weight: $font-weight-bold) {
+  @include _compoundFont($family, $weight);
 }
 
-@mixin codeFont($family: $font-family-mono, $size: $font-size-regular, $weight: $font-weight-normal) {
-  @include _compoundFont($family, $size, $weight);
+@mixin codeFont($family: $font-family-mono, $weight: $font-weight-normal) {
+  @include _compoundFont($family, $weight);
 }
