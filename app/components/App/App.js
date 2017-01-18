@@ -7,6 +7,7 @@ import classNames from 'classnames';
 // Redux
 
 // Components
+import Helmet from 'react-helmet';
 
 // CSS, Requires
 require('./App.scss');
@@ -22,6 +23,12 @@ class App extends React.Component {
 
     return (
       <div className={appCls}>
+        <Helmet
+          titleTemplate="%s — New Project"
+          defaultTitle="New Project"
+          meta={[
+            {name: 'description', content: 'Helmet application'}
+          ]}/>
         <span className="app__el">
           App
         </span>
@@ -35,12 +42,12 @@ App.propTypes = {
   children: React.PropTypes.object
 };
 
-const mapStateToProps = function(store) {
+const mapStateToProps = (store) => {
   return {
   };
 };
 
-const mapDispatchToProps = function(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
   };
 };
