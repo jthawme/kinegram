@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 // 3rd Party Modules
 import classNames from 'classnames';
+const config = require('config.js');
 
 // Redux
 
@@ -24,10 +25,10 @@ class App extends React.Component {
     return (
       <div className={appCls}>
         <Helmet
-          titleTemplate="%s — New Project"
-          defaultTitle="New Project"
+          titleTemplate={`%s - ${config.name}`}
+          defaultTitle={config.name}
           meta={[
-            {name: 'description', content: 'Helmet application'}
+            {name: 'description', content: config.description}
           ]}/>
         <span className="app__el">
           App
