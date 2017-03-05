@@ -25,6 +25,7 @@ function ManifestCreate(options) {
   }
 
   delete this.options.iconsPath;
+  delete this.options.appId;
 }
 
 ManifestCreate.prototype.apply = function ManifestCreateApply(compiler) {

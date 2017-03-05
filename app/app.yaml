@@ -1,0 +1,22 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+  - url: /.well-known/acme-challenge/(.+)
+    static_files: acme-challenge/\1
+    mime_type: text/plain
+    upload: acme-challenge/.*
+    application_readable: true
+
+  - url: /static
+    static_dir: static
+
+  - url: /icons
+    static_dir: icons
+
+  - url: /.*
+    static_files: index.html
+    expiration: '0d'
+    upload: index.html
+    secure: always
