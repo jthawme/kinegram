@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import WebFont from 'webfontloader';
+import { Router, browserHistory } from 'react-router';
+// import WebFont from 'webfontloader';
 
-import App from 'components/App/App.js';
-import Home from 'components/Home/Home.js';
-
+require('polyfills');
+require('serviceworker');
 
 import * as reducers from 'reducers/index';
 
@@ -21,13 +20,35 @@ const store = createStore(
 //   }
 // });
 
+import Routes from './routes';
+
+const onRouteEnter = (nextState, replace, callback) => {
+  // const state = store.getState();
+
+  console.log('Route entered');
+
+  callback();
+};
+
+const routeChange = () => {
+  console.log('Route Changed');
+};
+
+const childRoutes = Routes.childRoutes.slice().map((r) => {
+  if (r.path !== '*') {
+    return Object.assign({}, r, {
+      onEnter: onRouteEnter
+    });
+  } else {
+    return r;
+  }
+});
+
+Routes.childRoutes = childRoutes;
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home}/>
-      </Route>
-    </Router>
+    <Router history={browserHistory} routes={Routes} onUpdate={routeChange}/>
   </Provider>,
   document.getElementById('root')
 );

@@ -9,15 +9,26 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 const ManifestCreatePlugin = require('../config/manifestCreate.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const appConfig = require('../app/config.js');
 
+const cssText = new ExtractTextPlugin({ filename: 'static/css/[hash].min.css' });
+const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
+
+const sharedRoot = shared._sharedRoot;
+delete shared._sharedRoot;
+
 module.exports = merge.smart(shared, {
+  output: {
+    path: path.join(sharedRoot, 'dist'),
+    filename: 'static/js/[name]-[hash].js',
+    chunkFilename: 'static/js/[name]-[hash].js',
+    publicPath: '/'
+  },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new ExtractTextPlugin('static/css/[hash].min.css'),
     new FaviconsWebpackPlugin({
-      logo: path.join(shared._sharedRoot, 'app', 'images', 'favicon.png'),
+      logo: path.join(sharedRoot, 'app', 'images', 'favicon.png'),
       persistentCache: true,
       inject: true,
       prefix: 'icons/'
@@ -35,18 +46,72 @@ module.exports = merge.smart(shared, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendor', 'manifest'],
+      filename: 'static/js/[name]-[hash].js',
+      minChunks: function commonChunks(module) {
+        return module.context && module.context.indexOf('node_modules') !== -1;
+      }
+    }),
     new CopyWebpackPlugin([
+      // { from: 'app/.well-known/acme-challenge', to: 'acme-challenge' },
       { from: 'app/app.yaml' },
-      { from: 'app/.well-known/acme-challenge', to: 'acme-challenge' },
       { from: 'app/images/social.png', to: 'static/images' }
     ]),
-    new ManifestCreatePlugin(appConfig)
+    new ManifestCreatePlugin(appConfig),
+    new SWPrecacheWebpackPlugin(
+      {
+        cacheId: 'react-boilerplate',
+        filename: 'sw.js',
+        maximumFileSizeToCacheInBytes: 4194304,
+        minify: true,
+        staticFileGlobs: [
+          'dist/static/images/**.*',
+          'dist/static/css/*',
+          'dist/static/js/*',
+          'dist/index.html'
+        ],
+        stripPrefix: 'dist/',
+        runtimeCaching: [
+          {
+            handler: 'fastest',
+            urlPattern: /https?:\/\/fonts.+/
+          }
+        ]
+      }
+    ),
+    manifestText,
+    cssText
   ],
   module: {
     loaders: [
       {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          'presets': ['react', 'es2015', 'stage-0']
+        }
+      },
+      {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader!postcss-loader')
+        loader: cssText.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: function () {
+                  return [
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            },
+            'sass-loader'
+          ]
+        })
       }
     ]
   }

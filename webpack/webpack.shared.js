@@ -9,11 +9,6 @@ module.exports = {
   entry: [
     path.join(root, 'app', 'main.js')
   ],
-  output: {
-    path: path.join(root, 'dist'),
-    filename: 'static/js/[hash].js',
-    publicPath: '/'
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'app/index.tpl.html',
@@ -22,34 +17,41 @@ module.exports = {
     })
   ],
   resolve: {
-    root: path.resolve(path.join(root, 'app')),
-    extensions: ['', '.js', '.jsx']
+    modules: [
+      path.resolve('./app'),
+      'node_modules'
+    ],
+    extensions: ['.js', '.jsx']
   },
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          'presets': ['react', 'es2015', 'stage-0', 'react-hmre']
-        }
-      },
-      {
-        test: /\.json?$/,
-        loader: 'json-loader'
-      },
-      {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
       },
       {
         test: /\.(jpg|gif|svg|png)$/,
-        loader: 'file?name=static/images/[hash].[ext]'
+        loader: 'file-loader',
+        options: {
+          name: 'static/images/[hash].[ext]'
+        }
+      },
+      {
+        test: /app\.yaml$/,
+        use: [
+          'raw-loader',
+          {
+            loader: 'string-replace-loader',
+            options: {
+              search: '[test]',
+              replace: 'bitching'
+            }
+          }
+        ]
       }
     ]
-  },
-  postcss: [
-    require('autoprefixer')
-  ]
+  }
 };
