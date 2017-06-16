@@ -40,6 +40,21 @@ module.exports = {
         }
       },
       {
+        test: /\.svg$/,
+        issuer: /\.js$/,
+        loader: 'svg-inline-loader'
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        issuer: /\.scss$/,
+        options: {
+          limit: 10000,
+          name: 'static/css/font/[hash].[ext]',
+          publicPath: '../'
+        }
+      },
+      {
         test: /app\.yaml$/,
         use: [
           'raw-loader',

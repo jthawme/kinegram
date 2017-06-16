@@ -43,9 +43,9 @@ const commands = [
     default: false
   },
   {
-    name: 'dumb',
-    string: ['-d', '--dumb'],
-    description: 'Makes the component a dumb component',
+    name: 'smart',
+    string: ['-s', '--smart'],
+    description: 'Makes the component a smart/redux component',
     params: [],
     default: false
   }
@@ -79,7 +79,7 @@ fs.copyRecursive(path.join(__dirname, 'Component'), OUTPUT, (err) => {
     throw err;
   }
 
-  if (_args.dumb) {
+  if (!_args.smart) {
     fs.renameSync(path.join(OUTPUT, 'Component-dumb.js'), path.join(OUTPUT, NAME + '.js'));
     fs.unlinkSync(path.join(OUTPUT, 'Component.js'));
   } else {
