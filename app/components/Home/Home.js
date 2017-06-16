@@ -16,12 +16,12 @@ class Home extends React.Component {
     super(props);
   }
   render() {
-    const homeCls = classNames(
+    const cls = classNames(
       'home'
     );
 
     return (
-      <div className={homeCls}>
+      <div className={cls}>
         Home
       </div>
     );

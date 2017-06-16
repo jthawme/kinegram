@@ -18,12 +18,12 @@ class App extends React.Component {
     super(props);
   }
   render() {
-    const appCls = classNames(
+    const cls = classNames(
       'app'
     );
 
     return (
-      <div className={appCls}>
+      <div className={cls}>
         <Helmet
           titleTemplate={`%s - ${config.name}`}
           defaultTitle={config.name}
