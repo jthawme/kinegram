@@ -71,8 +71,10 @@ const OUTPUT = (_args.path !== DEFAULT_PATH) ? path.join(ROOT, _args.path) : pat
 
 fs.stat(OUTPUT, (err, stats) => {
   if (err || !stats.isDirectory()) {
-    console.error('Output path is not a directory');
-    return false;
+    if (OUTPUT.substr(NAME.length * -1) !== NAME) {
+      console.error('Output path is not a directory');
+      return false;
+    }
   }
 
   fs.copyRecursive(path.join(__dirname, 'Component'), OUTPUT, (err) => {
