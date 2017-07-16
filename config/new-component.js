@@ -3,6 +3,8 @@ const path = require('path');
 const cli = require('./cli-parse.js');
 const replace = require('replace');
 
+const DEFAULT_PATH = 'app/components';
+
 const commands = [
   {
     name: 'help',
@@ -23,17 +25,10 @@ const commands = [
   },
   {
     name: 'path',
-    string: ['-p', '--p'],
+    string: ['-p', '--path'],
     description: 'Where to output the new component',
     params: ['string'],
-    default: 'app/components'
-  },
-  {
-    name: 'nofolder',
-    string: ['--no-folder'],
-    description: 'Will not make a new folder for the component',
-    params: [],
-    default: false
+    default: DEFAULT_PATH
   },
   {
     name: 'noscss',
@@ -72,46 +67,54 @@ const NAME = _args.name;
 const LOWER = NAME.toLowerCase();
 
 const ROOT = path.join(__dirname, '..');
-const OUTPUT = _args.nofolder ? path.join(ROOT, _args.path) : path.join(ROOT, _args.path, NAME);
+const OUTPUT = (_args.path !== DEFAULT_PATH) ? path.join(ROOT, _args.path) : path.join(ROOT, _args.path, NAME);
 
-fs.copyRecursive(path.join(__dirname, 'Component'), OUTPUT, (err) => {
-  if (err) {
-    throw err;
+fs.stat(OUTPUT, (err, stats) => {
+  if (err || !stats.isDirectory()) {
+    console.error('Output path is not a directory');
+    return false;
   }
 
-  if (!_args.smart) {
-    fs.renameSync(path.join(OUTPUT, 'Component-dumb.js'), path.join(OUTPUT, NAME + '.js'));
-    fs.unlinkSync(path.join(OUTPUT, 'Component.js'));
-  } else {
-    fs.renameSync(path.join(OUTPUT, 'Component.js'), path.join(OUTPUT, NAME + '.js'));
-    fs.unlinkSync(path.join(OUTPUT, 'Component-dumb.js'));
-  }
+  fs.copyRecursive(path.join(__dirname, 'Component'), OUTPUT, (err) => {
+    if (err) {
+      throw err;
+    }
 
-  if (_args.noscss) {
-    fs.unlinkSync(path.join(OUTPUT, 'Component.scss'));
-  } else {
-    fs.renameSync(path.join(OUTPUT, 'Component.scss'), path.join(OUTPUT, NAME + '.scss'));
-  }
+    if (!_args.smart) {
+      fs.renameSync(path.join(OUTPUT, 'Component-dumb.js'), path.join(OUTPUT, NAME + '.js'));
+      fs.unlinkSync(path.join(OUTPUT, 'Component.js'));
+    } else {
+      fs.renameSync(path.join(OUTPUT, 'Component.js'), path.join(OUTPUT, NAME + '.js'));
+      fs.unlinkSync(path.join(OUTPUT, 'Component-dumb.js'));
+    }
 
-  replace({
-    regex: 'SCSS',
-    replacement: _args.noscss ? '' : "require('./" + NAME + ".scss');",
-    paths: [OUTPUT],
-    recursive: true,
-    silent: true,
-  });
-  replace({
-    regex: 'NAME',
-    replacement: NAME,
-    paths: [OUTPUT],
-    recursive: true,
-    silent: true,
-  });
-  replace({
-    regex: 'LOWER',
-    replacement: LOWER,
-    paths: [OUTPUT],
-    recursive: true,
-    silent: true,
+    if (_args.noscss) {
+      fs.unlinkSync(path.join(OUTPUT, 'Component.scss'));
+    } else {
+      fs.renameSync(path.join(OUTPUT, 'Component.scss'), path.join(OUTPUT, NAME + '.scss'));
+    }
+
+    replace({
+      regex: 'SCSS',
+      replacement: _args.noscss ? '' : "require('./" + NAME + ".scss');",
+      paths: [OUTPUT],
+      recursive: true,
+      silent: true,
+    });
+    replace({
+      regex: 'NAME',
+      replacement: NAME,
+      paths: [OUTPUT],
+      recursive: true,
+      silent: true,
+    });
+    replace({
+      regex: 'LOWER',
+      replacement: LOWER,
+      paths: [OUTPUT],
+      recursive: true,
+      silent: true,
+    });
   });
 });
+

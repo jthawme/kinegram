@@ -43,7 +43,7 @@ const parseArguments = (_commands) => {
               break;
             }
 
-            if (matchedArgument.modify[i]) {
+            if (matchedArgument.modify && matchedArgument.modify[i]) {
               cast = matchedArgument.modify[i](cast);
             }
 
