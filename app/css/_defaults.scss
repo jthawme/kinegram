@@ -4,4 +4,16 @@
 html,
 body {
     @include bodyFont();
+
+    height: 100%;
+
+    line-height: 1.6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#root {
+    height: 100%;
 }

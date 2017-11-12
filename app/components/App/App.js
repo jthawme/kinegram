@@ -40,7 +40,10 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-  children: React.PropTypes.object
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.array
+  ])
 };
 
 const mapStateToProps = (store) => {

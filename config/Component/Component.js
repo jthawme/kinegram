@@ -17,6 +17,7 @@ class NAME extends React.Component {
   }
   render() {
     const cls = classNames(
+      this.props.className,
       'LOWER'
     );
 
@@ -29,7 +30,7 @@ class NAME extends React.Component {
 }
 
 NAME.propTypes = {
-  children: React.PropTypes.object
+  className: React.PropTypes.string
 };
 
 const mapStateToProps = (store) => {
