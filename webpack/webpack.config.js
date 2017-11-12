@@ -26,20 +26,26 @@ module.exports = merge.smart(shared, {
     })
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          'presets': ['react', 'es2015', 'stage-0', 'react-hmre']
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['react', 'env', 'react-hmre'],
+          }
         }
       },
       {
         test: /\.scss$/,
         use: [
-          'style-loader',
-          'css-loader',
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader",
+          },
           {
             loader: 'postcss-loader',
             options: {
@@ -50,7 +56,9 @@ module.exports = merge.smart(shared, {
               }
             }
           },
-          'sass-loader'
+          {
+            loader: "sass-loader"
+          }
         ]
       },
     ]

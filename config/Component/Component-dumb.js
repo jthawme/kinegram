@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // 3rd Party Modules
 import classNames from 'classnames';
@@ -29,7 +30,7 @@ class NAME extends React.Component {
 }
 
 NAME.propTypes = {
-  className: React.PropTypes.string
+  className: PropTypes.string
 };
 
 export default NAME;

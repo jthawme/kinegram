@@ -30,9 +30,9 @@ $font-weight-thin: 300;
 $font-weight-normal: 400;
 $font-weight-bold: 700;
 
-$font-family-body: 'Work Sans', sans-serif;
-$font-family-headline: 'Playfair Display', sans-serif;
-$font-family-mono: 'Space Mono', monospace;
+$font-family-body: sans-serif;
+$font-family-headline: sans-serif;
+$font-family-mono: monospace;
 
 @mixin _compoundFont($family: $font-family-body, $weight: $font-weight-normal) {
   font: {

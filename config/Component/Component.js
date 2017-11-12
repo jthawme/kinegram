@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // 3rd Party Modules
@@ -30,7 +31,7 @@ class NAME extends React.Component {
 }
 
 NAME.propTypes = {
-  className: React.PropTypes.string
+  className: PropTypes.string
 };
 
 const mapStateToProps = (store) => {

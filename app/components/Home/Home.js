@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // 3rd Party Modules
@@ -31,12 +32,12 @@ class Home extends React.Component {
 Home.propTypes = {
 };
 
-const mapStateToProps = function(store) {
+const mapStateToProps = (store) => {
   return {
   };
 };
 
-const mapDispatchToProps = function(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
   };
 };
