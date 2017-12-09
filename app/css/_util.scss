@@ -10,3 +10,17 @@
   $remSize: strip-unit($size) / 16;
   @return #{$remSize}rem;
 }
+
+$gutter: 20px;
+
+/* Mixin */
+@mixin columns($cols, $total: 12) {
+  $unit: (100%  / $total) ;
+
+  min-width: calc((#{$unit * $cols} - #{$gutter} ) + ( #{$gutter} / #{$total / $cols}));
+  margin-right: $gutter;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}

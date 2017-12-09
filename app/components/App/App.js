@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 // 3rd Party Modules
 import classNames from 'classnames';
 const config = require('config.js');
+import {withRouter} from 'react-router-dom';
 
 // Redux
 
@@ -57,7 +58,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(App);
+)(App));
