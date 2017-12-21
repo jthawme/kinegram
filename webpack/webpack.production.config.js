@@ -92,6 +92,7 @@ module.exports = merge.smart(shared, {
           loader: 'babel-loader',
           options: {
             presets: ['react', 'env'],
+            plugins: ['syntax-dynamic-import']
           }
         }
       },
