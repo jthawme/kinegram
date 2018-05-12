@@ -17,3 +17,55 @@ body {
 #root {
     height: 100%;
 }
+
+textarea,
+input,
+select,
+button {
+    font-family: inherit;
+    font-style: inherit;
+    font-size: inherit;
+
+    line-height: inherit;
+
+    border-radius: 0;
+}
+
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+
+    background: transparent;
+
+    /* inherit font & color from ancestor */
+    color: inherit;
+    font: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+}
+
+h1,
+h2,
+h3 {
+    @include headlineFont;
+}
+
+h1 {
+    @include font-size-x-large;
+}
+
+h2,
+h3 {
+    @include font-size-large;
+}

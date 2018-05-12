@@ -5,12 +5,15 @@ import { connect } from 'react-redux';
 // 3rd Party Modules
 import classNames from 'classnames';
 const config = require('config.js');
-import {withRouter} from 'react-router-dom';
+import {withRouter, Switch} from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import Helmet from 'react-helmet';
 
 // Redux
 
 // Components
-import Helmet from 'react-helmet';
+import routes from './Routes';
+import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 
 // CSS, Requires
 require('./App.scss');
@@ -19,10 +22,19 @@ class App extends React.Component {
   constructor(props) {
     super(props);
   }
+
+  getCurrentKey(pathname) {
+    return pathname.split('/')[1] || '/';
+  }
+
   render() {
+    const {location} = this.props;
+
     const cls = classNames(
       'app'
     );
+
+    const currentKey = this.getCurrentKey(location.pathname);
 
     return (
       <div className={cls}>
@@ -32,10 +44,26 @@ class App extends React.Component {
           meta={[
             {name: 'description', content: config.description}
           ]}/>
-        <span className="app__el">
-          App
-        </span>
-        { this.props.children }
+
+        <TransitionGroup component="main">
+          <CSSTransition
+            key={currentKey}
+            timeout={{
+              enter: 800,
+              exit: 200
+            }}
+            classNames="fadeMove"
+            mountOnEnter
+            unmountOnExit>
+            <div className={'app__routes-wrapper'}>
+              <Switch location={location}>
+                {routes}
+              </Switch>
+            </div>
+          </CSSTransition>
+        </TransitionGroup>
+
+        <ServiceWorker/>
       </div>
     );
   }
@@ -45,7 +73,8 @@ App.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array
-  ])
+  ]),
+  location: PropTypes.object
 };
 
 const mapStateToProps = (store) => {

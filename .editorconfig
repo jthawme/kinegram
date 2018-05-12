@@ -4,6 +4,6 @@ root = true
 indent_style = space
 indent_size = 2
 
-[*{.css, .scss}]
+[*.{css, scss}]
 indent_style = space
 indent_size = 2
