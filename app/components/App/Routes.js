@@ -6,7 +6,7 @@ import Loading from '../Common/Loading/Loading';
 
 const routeComponents = {
   home: {
-    route: '/',
+    path: '/',
     exact: true,
     component: Loadable({
       loader: () => import('../Home/Home'),
