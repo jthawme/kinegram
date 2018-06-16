@@ -1,4 +1,7 @@
 <?php
+add_theme_support('post-thumbnails');
+add_theme_support('menus');
+add_theme_support('html5');
 
 add_action('get_header', 'remove_admin_bump');
 
