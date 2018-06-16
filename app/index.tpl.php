@@ -33,7 +33,7 @@ $templateDir = get_template_directory_uri();
     <% } %>
 
     <?php
-    wp_head();
+    get_header();
     ?>
 
     <script>
