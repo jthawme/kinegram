@@ -15,14 +15,15 @@ const appConfig = require('../app/config.js');
 const sharedRoot = shared._sharedRoot;
 delete shared._sharedRoot;
 
-const publicPath = '/wp-content/themes/custom-theme/dist/';
+const themeName = 'custom-theme';
+const publicPath = '/wp-content/themes/' + themeName + '/dist/';
 
 const cssText = new ExtractTextPlugin({ filename: 'static/css/styles.min.css' });
 const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
 
 module.exports = merge.smart(shared, {
   output: {
-    path: path.join(sharedRoot, '../dist/'),
+    path: path.join(sharedRoot, '../' + themeName + '/dist'),
     filename: 'static/js/bundle.js',
     chunkFilename: 'static/js/[name]-[hash].js',
     publicPath: publicPath
@@ -54,7 +55,7 @@ module.exports = merge.smart(shared, {
     new ManifestCreatePlugin(appConfig),
     new SWPrecacheWebpackPlugin(
       {
-        cacheId: 'custom-theme',
+        cacheId: themeName,
         filename: 'sw.js',
         maximumFileSizeToCacheInBytes: 4194304,
         minify: true,
