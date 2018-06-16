@@ -2,9 +2,61 @@
 @import '~css/defaults';
 
 .app {
+  position: relative;
+
   height: 100%;
 
-  &__el {
-    color: red;
+  &__routes-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow-y: auto;
+
+    will-change: transform, opacity;
+  }
+}
+
+// Thanks Toaster
+// Total Duration for IN animation: 300ms + 500ms = 800ms
+$transition-duration-in: 300ms;
+$transition-delay-in: 500ms;
+
+// Total Duration for OUT animation: 200ms
+$transition-duration-out: 200ms;
+
+// For Dynamic Transitions:
+// https://medium.com/lalilo/dynamic-transitions-with-react-router-and-react-transition-group-69ab795815c9
+
+.fadeMove {
+  &-enter {
+    opacity: 0.01;
+    transform: translateY(10px);
+
+    &-active {
+      opacity: 1;
+      transform: none;
+
+      transition-property: opacity, transform;
+      transition-timing-function: ease-out;
+      transition-duration: $transition-duration-in;
+      transition-delay: $transition-delay-in;
+    }
+  }
+
+  &-exit {
+    opacity: 1;
+    transform: none;
+
+    &-active {
+      opacity: 0.01;
+      transform: translateY(10px);
+
+      transition-property: opacity, transform;
+      transition-timing-function: ease-in;
+      transition-duration: $transition-duration-out;
+    }
   }
 }
