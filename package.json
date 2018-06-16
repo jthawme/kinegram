@@ -1,26 +1,23 @@
 {
-  "name": "webpack-express-boilerplate",
-  "version": "0.1.0",
+  "name": "jthawme-boilerplate",
+  "version": "1.0.0",
   "description": "A boilerplate for running a Webpack workflow in Node express",
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianalfoni/webpack-express-boilerplate.git"
+    "url": "https://johknee@bitbucket.org/johknee/react-boilerplate.git"
   },
   "keywords": [
     "express",
     "webpack",
     "node"
   ],
-  "author": "Christian Alfoni",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/christianalfoni/webpack-express-boilerplate/issues"
-  },
-  "homepage": "https://github.com/christianalfoni/webpack-express-boilerplate",
+  "author": "Jonny Thaw",
+  "homepage": "https://jthaw.me",
   "scripts": {
     "test": "",
     "start": "node server",
+    "wordpress": "rimraf ../dist && webpack --config ./webpack/webpack.wordpress.config.js --watch",
     "build": "rimraf dist && cross-env NODE_ENV=production webpack --config ./webpack/webpack.production.config.js --progress --profile --colors",
     "eslint": "eslint .",
     "jscs": "jscs .",

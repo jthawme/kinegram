@@ -1,30 +1,31 @@
 'use strict';
 
-const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const shared = require('./webpack.shared.js');
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const StatsPlugin = require('stats-webpack-plugin');
 const ManifestCreatePlugin = require('../config/manifestCreate.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const appConfig = require('../app/config.js');
 
-const cssText = new ExtractTextPlugin({ filename: 'static/css/[hash].min.css' });
-const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
-
 const sharedRoot = shared._sharedRoot;
 delete shared._sharedRoot;
 
+const publicPath = '/wp-content/themes/custom-theme/dist/';
+
+const cssText = new ExtractTextPlugin({ filename: 'static/css/styles.min.css' });
+const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
+
 module.exports = merge.smart(shared, {
   output: {
-    path: path.join(sharedRoot, 'dist'),
-    filename: 'static/js/[name]-[hash].js',
+    path: path.join(sharedRoot, '../dist/'),
+    filename: 'static/js/bundle.js',
     chunkFilename: 'static/js/[name]-[hash].js',
-    publicPath: '/'
+    publicPath: publicPath
   },
   plugins: [
     new FaviconsWebpackPlugin({
@@ -39,13 +40,6 @@ module.exports = merge.smart(shared, {
         screw_ie8: true
       }
     }),
-    new StatsPlugin('webpack.stats.json', {
-      source: false,
-      modules: false
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'manifest'],
       filename: 'static/js/[name]-[hash].js',
@@ -54,14 +48,13 @@ module.exports = merge.smart(shared, {
       }
     }),
     new CopyWebpackPlugin([
-      // { from: 'app/.well-known/acme-challenge', to: 'acme-challenge' },
-      { from: 'app/app.yaml' },
+      { from: 'app/wordpress' },
       { from: 'app/images/social.png', to: 'static/images' }
     ]),
     new ManifestCreatePlugin(appConfig),
     new SWPrecacheWebpackPlugin(
       {
-        cacheId: 'react-boilerplate',
+        cacheId: 'custom-theme',
         filename: 'sw.js',
         maximumFileSizeToCacheInBytes: 4194304,
         minify: true,
@@ -81,12 +74,7 @@ module.exports = merge.smart(shared, {
       }
     ),
     manifestText,
-    cssText,
-    new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
-      inject: 'body',
-      filename: 'index.html'
-    })
+    cssText
   ],
   module: {
     rules: [
@@ -120,7 +108,17 @@ module.exports = merge.smart(shared, {
             'sass-loader'
           ]
         })
-      }
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        issuer: /\.scss$/,
+        options: {
+          limit: 10000,
+          name: 'static/css/font/[hash].[ext]',
+          publicPath: publicPath
+        }
+      },
     ]
   }
 });

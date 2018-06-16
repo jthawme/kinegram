@@ -11,13 +11,16 @@
   @return #{$remSize}rem;
 }
 
-$gutter: 20px;
+$global-gutter: 20px;
+$global-padding: 32px;
 
-/* Mixin */
-@mixin columns($cols, $total: 12) {
+@function column-width($cols, $total: 12) {
   $unit: (100%  / $total) ;
+  @return calc((#{$unit * $cols} - #{$gutter} ) + ( #{$gutter} / #{$total / $cols}));
+}
 
-  min-width: calc((#{$unit * $cols} - #{$gutter} ) + ( #{$gutter} / #{$total / $cols}));
+@mixin columns($cols, $total: 12) {
+  min-width: column-width($cols, $total);
   margin-right: $gutter;
 
   &:last-child {

@@ -9,13 +9,6 @@ module.exports = {
   entry: [
     path.join(root, 'app', 'main.js')
   ],
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
-      inject: 'body',
-      filename: 'index.html'
-    })
-  ],
   resolve: {
     modules: [
       path.resolve('./app'),
