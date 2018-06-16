@@ -9,6 +9,7 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const ManifestCreatePlugin = require('../config/manifestCreate.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const appConfig = require('../app/config.js');
 
@@ -32,7 +33,6 @@ module.exports = merge.smart(shared, {
     new FaviconsWebpackPlugin({
       logo: path.join(sharedRoot, 'app', 'images', 'favicon.png'),
       persistentCache: true,
-      inject: true,
       prefix: 'icons/'
     }),
     new webpack.optimize.UglifyJsPlugin({
@@ -75,7 +75,12 @@ module.exports = merge.smart(shared, {
       }
     ),
     manifestText,
-    cssText
+    cssText,
+    new HtmlWebpackPlugin({
+      template: 'app/index.tpl.php',
+      inject: false,
+      filename: '../index.php'
+    })
   ],
   module: {
     rules: [

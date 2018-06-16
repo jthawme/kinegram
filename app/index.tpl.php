@@ -28,7 +28,9 @@ $templateDir = get_template_directory_uri();
     <link rel="icon" type="image/png" sizes="32x32" href="<?php echo $templateDir;?>/dist/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $templateDir;?>/dist/icons/favicon-16x16.png">
     <link rel="shortcut icon" href="<?php echo $templateDir;?>/dist/icons/favicon.ico">
-    <link href="<?php echo $templateDir ;?>/dist/static/css/styles.min.css" rel="stylesheet">
+    <% for (var css in htmlWebpackPlugin.files.css) { %>
+    <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+    <% } %>
 
     <?php
     wp_head();
@@ -47,6 +49,8 @@ $templateDir = get_template_directory_uri();
   </head>
   <body>
     <div id="root"></div>
-    <script src="<?php echo $templateDir ;?>/dist/static/js/bundle.js"></script>
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+    <% } %>
   </body>
 </html>

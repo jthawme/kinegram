@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const root = path.join(__dirname, '..');
 
 module.exports = {

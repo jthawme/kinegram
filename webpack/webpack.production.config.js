@@ -10,6 +10,7 @@ const StatsPlugin = require('stats-webpack-plugin');
 const ManifestCreatePlugin = require('../config/manifestCreate.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const appConfig = require('../app/config.js');
 
