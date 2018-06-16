@@ -48,7 +48,7 @@ module.exports = merge.smart(shared, {
       }
     }),
     new CopyWebpackPlugin([
-      { from: 'app/wordpress' },
+      { from: 'app/wordpress', to: '../' },
       { from: 'app/images/social.png', to: 'static/images' }
     ]),
     new ManifestCreatePlugin(appConfig),
