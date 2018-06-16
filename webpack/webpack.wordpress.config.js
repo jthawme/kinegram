@@ -22,14 +22,31 @@ const publicPath = '/wp-content/themes/' + themeName + '/dist/';
 const cssText = new ExtractTextPlugin({ filename: 'static/css/styles.min.css' });
 const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
 
-module.exports = merge.smart(shared, {
-  output: {
-    path: path.join(sharedRoot, '../' + themeName + '/dist'),
-    filename: 'static/js/bundle.js',
-    chunkFilename: 'static/js/[name]-[hash].js',
-    publicPath: publicPath
-  },
-  plugins: [
+const plugins = [
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    names: ['vendor', 'manifest'],
+    filename: 'static/js/[name]-[hash].js',
+    minChunks: function commonChunks(module) {
+      return module.context && module.context.indexOf('node_modules') !== -1;
+    }
+  }),
+  new CopyWebpackPlugin([
+    { from: 'app/wordpress', to: '../' },
+    { from: 'app/images/social.png', to: 'static/images' }
+  ]),
+  cssText,
+  new HtmlWebpackPlugin({
+    template: 'app/index.tpl.php',
+    inject: false,
+    filename: '../index.php'
+  })
+];
+
+if (process.env.NODE_ENV === 'production') {
+  plugins.push(
     new FaviconsWebpackPlugin({
       logo: path.join(sharedRoot, 'app', 'images', 'favicon.png'),
       persistentCache: true,
@@ -41,17 +58,6 @@ module.exports = merge.smart(shared, {
         screw_ie8: true
       }
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
-      filename: 'static/js/[name]-[hash].js',
-      minChunks: function commonChunks(module) {
-        return module.context && module.context.indexOf('node_modules') !== -1;
-      }
-    }),
-    new CopyWebpackPlugin([
-      { from: 'app/wordpress', to: '../' },
-      { from: 'app/images/social.png', to: 'static/images' }
-    ]),
     new ManifestCreatePlugin(appConfig),
     new SWPrecacheWebpackPlugin(
       {
@@ -75,13 +81,17 @@ module.exports = merge.smart(shared, {
       }
     ),
     manifestText,
-    cssText,
-    new HtmlWebpackPlugin({
-      template: 'app/index.tpl.php',
-      inject: false,
-      filename: '../index.php'
-    })
-  ],
+  );
+}
+
+module.exports = merge.smart(shared, {
+  output: {
+    path: path.join(sharedRoot, '../' + themeName + '/dist'),
+    filename: 'static/js/bundle.js',
+    chunkFilename: 'static/js/[name]-[hash].js',
+    publicPath: publicPath
+  },
+  plugins: plugins,
   module: {
     rules: [
       {
