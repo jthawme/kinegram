@@ -41,6 +41,7 @@ $templateDir = get_template_directory_uri();
     wpValues.templateURL = '<?php echo $templateDir;?>';
     wpValues.siteURL = '<?php echo home_url();?>';
     wpValues.siteName = '<?php echo get_bloginfo("name");?>';
+    wpValues.endpoint = '<?php echo home_url();?>/wp-json/wp/v2';
     </script>
 
     <?php
