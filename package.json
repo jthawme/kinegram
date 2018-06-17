@@ -17,8 +17,8 @@
   "scripts": {
     "test": "",
     "start": "node server",
-    "wordpress": "rimraf ../dist && NODE_ENV=development webpack --config ./webpack/webpack.wordpress.config.js --watch",
-    "wordpress-prod": "rimraf ../dist && NODE_ENV=production webpack --config ./webpack/webpack.wordpress.config.js",
+    "wordpress": "rimraf ../custom-theme && NODE_ENV=development webpack --config ./webpack/webpack.wordpress.config.js --watch",
+    "wordpress-prod": "rimraf ../custom-theme && NODE_ENV=production webpack --config ./webpack/webpack.wordpress.config.js",
     "build": "rimraf dist && cross-env NODE_ENV=production webpack --config ./webpack/webpack.production.config.js --progress --profile --colors",
     "eslint": "eslint .",
     "jscs": "jscs .",
