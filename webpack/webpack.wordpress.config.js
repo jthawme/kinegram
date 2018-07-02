@@ -22,13 +22,15 @@ const publicPath = '/wp-content/themes/' + themeName + '/dist/';
 const cssText = new ExtractTextPlugin({ filename: 'static/css/styles.min.css' });
 const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
 
+const jsFileName = (process.env.NODE_ENV === 'production') ? 'static/js/[name]-[hash].js' : 'static/js/[name].js';
+
 const plugins = [
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
   new webpack.optimize.CommonsChunkPlugin({
     names: ['vendor', 'manifest'],
-    filename: 'static/js/[name]-[hash].js',
+    filename: jsFileName,
     minChunks: function commonChunks(module) {
       return module.context && module.context.indexOf('node_modules') !== -1;
     }
@@ -88,7 +90,7 @@ module.exports = merge.smart(shared, {
   output: {
     path: path.join(sharedRoot, '../' + themeName + '/dist'),
     filename: 'static/js/bundle.js',
-    chunkFilename: 'static/js/[name]-[hash].js',
+    chunkFilename: jsFileName,
     publicPath: publicPath
   },
   plugins: plugins,
