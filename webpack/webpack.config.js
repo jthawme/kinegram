@@ -40,7 +40,7 @@ module.exports = merge.smart(shared, {
           loader: 'babel-loader',
           options: {
             presets: ['react', 'env', 'react-hmre'],
-            plugins: ['syntax-dynamic-import']
+            plugins: ['syntax-dynamic-import', 'transform-class-properties']
           }
         }
       },

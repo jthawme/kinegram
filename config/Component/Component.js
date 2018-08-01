@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // 3rd Party Modules
 import classNames from 'classnames';
+import { bindActionCreators } from 'redux';
 
 // Redux
 
@@ -13,12 +14,15 @@ import classNames from 'classnames';
 SCSS
 
 class NAME extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+    className: PropTypes.string
+  };
+
   render() {
+    const { className } = this.props;
+
     const cls = classNames(
-      this.props.className,
+      className,
       'LOWER'
     );
 
@@ -30,18 +34,15 @@ class NAME extends React.Component {
   }
 }
 
-NAME.propTypes = {
-  className: PropTypes.string
-};
-
 const mapStateToProps = (store) => {
   return {
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-  };
+  return bindActionCreators({
+
+  }, dispatch);
 };
 
 export default connect(
