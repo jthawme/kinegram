@@ -8,6 +8,7 @@ const config = require('config.js');
 import {withRouter, Switch} from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Helmet from 'react-helmet';
+import {bindActionCreators} from 'redux';
 
 // Redux
 
@@ -19,9 +20,10 @@ import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 require('./App.scss');
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+    children: PropTypes.node,
+    location: PropTypes.object
+  };
 
   getCurrentKey(pathname) {
     return pathname.split('/')[1] || '/';
@@ -69,22 +71,15 @@ class App extends React.Component {
   }
 }
 
-App.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array
-  ]),
-  location: PropTypes.object
-};
-
 const mapStateToProps = (store) => {
   return {
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-  };
+  return bindActionCreators({
+
+  }, dispatch);
 };
 
 export default withRouter(connect(

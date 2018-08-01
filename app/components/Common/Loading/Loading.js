@@ -12,9 +12,12 @@ import classNames from 'classnames';
 require('./Loading.scss');
 
 class Loading extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+    className: PropTypes.string,
+    error: PropTypes.bool,
+    pastDelay: PropTypes.bool
+  };
+
   render() {
     const cls = classNames(
       this.props.className,
@@ -30,11 +33,5 @@ class Loading extends React.Component {
     }
   }
 }
-
-Loading.propTypes = {
-  className: PropTypes.string,
-  error: PropTypes.bool,
-  pastDelay: PropTypes.bool
-};
 
 export default Loading;

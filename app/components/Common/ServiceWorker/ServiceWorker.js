@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // 3rd Party Modules
+import {bindActionCreators} from 'redux';
 
 // Redux
 
@@ -11,9 +12,15 @@ import { connect } from 'react-redux';
 // CSS, Requires
 
 class ServiceWorker extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+    onSWUpdated: PropTypes.func,
+    onSWInstalled: PropTypes.func,
+  };
+
+  static defaultProps = {
+    onSWUpdated: () => {},
+    onSWInstalled: () => {},
+  };
 
   componentWillMount() {
     window.addEventListener('load', () => {
@@ -50,24 +57,15 @@ class ServiceWorker extends React.Component {
   }
 }
 
-ServiceWorker.propTypes = {
-  onSWUpdated: PropTypes.func,
-  onSWInstalled: PropTypes.func,
-};
-
-ServiceWorker.defaultProps = {
-  onSWUpdated: () => {},
-  onSWInstalled: () => {},
-};
-
 const mapStateToProps = (store) => {
   return {
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-  };
+  return bindActionCreators({
+
+  }, dispatch);
 };
 
 export default connect(

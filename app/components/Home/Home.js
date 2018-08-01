@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // 3rd Party Modules
 import classNames from 'classnames';
+import { bindActionCreators } from 'redux';
 
 // Redux
 
@@ -13,9 +14,9 @@ import classNames from 'classnames';
 require('./Home.scss');
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+  };
+
   render() {
     const cls = classNames(
       'home'
@@ -29,17 +30,15 @@ class Home extends React.Component {
   }
 }
 
-Home.propTypes = {
-};
-
 const mapStateToProps = (store) => {
   return {
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-  };
+  return bindActionCreators({
+
+  }, dispatch);
 };
 
 export default connect(
