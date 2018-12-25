@@ -3,17 +3,16 @@ api_version: 1
 threadsafe: true
 
 handlers:
-  - url: /.well-known/acme-challenge/(.+)
-    static_files: acme-challenge/\1
-    mime_type: text/plain
-    upload: acme-challenge/.*
-    application_readable: true
-
   - url: /static
     static_dir: static
 
   - url: /icons
     static_dir: icons
+
+  - url: /sw.js
+    static_files: sw.js
+    upload: sw.js
+    secure: always
 
   - url: /.*
     static_files: index.html

@@ -4,42 +4,26 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const shared = require('./webpack.shared.js');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
-const ManifestCreatePlugin = require('../config/manifestCreate.js');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
-const appConfig = require('../app/config.js');
-
-const cssText = new ExtractTextPlugin({ filename: 'static/css/[hash].min.css' });
-const manifestText = new ExtractTextPlugin({ filename: 'manifest.json' });
+const metaJson = require('../context/meta.json');
 
 const sharedRoot = shared._sharedRoot;
 delete shared._sharedRoot;
 
 module.exports = merge.smart(shared, {
+  mode: 'production',
   output: {
-    path: path.join(sharedRoot, 'dist'),
-    filename: 'static/js/[name]-[hash].js',
-    chunkFilename: 'static/js/[name]-[hash].js',
-    publicPath: '/'
+    path: path.join(sharedRoot, 'dist', 'static'),
+    filename: 'js/[name]-[hash].js',
+    chunkFilename: 'js/[name]-[hash].js',
+    publicPath: '/static/'
   },
   plugins: [
-    new FaviconsWebpackPlugin({
-      logo: path.join(sharedRoot, 'app', 'images', 'favicon.png'),
-      persistentCache: true,
-      inject: true,
-      prefix: 'icons/'
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false,
-        screw_ie8: true
-      }
-    }),
     new StatsPlugin('webpack.stats.json', {
       source: false,
       modules: false
@@ -47,80 +31,91 @@ module.exports = merge.smart(shared, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest'],
-      filename: 'static/js/[name]-[hash].js',
-      minChunks: function commonChunks(module) {
-        return module.context && module.context.indexOf('node_modules') !== -1;
-      }
+    new WorkboxPlugin.GenerateSW({
+      swDest: '../sw.js',
+      clientsClaim: true,
+      skipWaiting: true,
+      runtimeCaching: [
+        {
+          handler: 'cacheOnly',
+          urlPattern: /https?:\/\/fonts.+/
+        }
+      ],
+      navigateFallback: '/index.html',
     }),
-    new CopyWebpackPlugin([
-      // { from: 'app/.well-known/acme-challenge', to: 'acme-challenge' },
-      { from: 'app/app.yaml' },
-      { from: 'app/images/social.png', to: 'static/images' }
-    ]),
-    new ManifestCreatePlugin(appConfig),
-    new SWPrecacheWebpackPlugin(
-      {
-        cacheId: 'react-boilerplate',
-        filename: 'sw.js',
-        maximumFileSizeToCacheInBytes: 4194304,
-        minify: true,
-        staticFileGlobs: [
-          'dist/static/images/**.*',
-          'dist/static/css/*',
-          'dist/static/js/*',
-          'dist/index.html'
-        ],
-        stripPrefix: 'dist/',
-        runtimeCaching: [
-          {
-            handler: 'fastest',
-            urlPattern: /https?:\/\/fonts.+/
-          }
-        ]
+    new WebpackPwaManifest({
+      name: metaJson.title,
+      short_name: metaJson.short_title,
+      description: metaJson.description,
+      background_color: metaJson.colour,
+      crossorigin: null,
+      inject: true,
+      publicPath: '/static/',
+      icons: [
+        {
+          src: path.resolve('public/images/favicon.png'),
+          sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
+        }
+      ]
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[hash].min.css',
+      chunkFilename: 'css/[id].[hash].min.css'
+    }),
+    new FaviconsWebpackPlugin({
+      logo: path.resolve('public/images/favicon.png'),
+      prefix: '../icons/',
+      emitStats: false,
+      persistentCache: true,
+      inject: true,
+      background: '#fff',
+      title: metaJson.title,
+      icons: {
+        android: true,
+        appleIcon: true,
+        appleStartup: true,
+        coast: false,
+        favicons: true,
+        firefox: true,
+        opengraph: false,
+        twitter: false,
+        yandex: false,
+        windows: false
       }
-    ),
-    manifestText,
-    cssText,
-    new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
-      inject: 'body',
-      filename: 'index.html'
     })
   ],
   module: {
     rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  require('autoprefixer')
+                ];
+              }
+            }
+          },
+          'sass-loader'
+        ]
+      },
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['react', 'env'],
-            plugins: ['syntax-dynamic-import', 'transform-class-properties']
+            presets: ['@babel/react', '@babel/env'],
+            plugins: ['@babel/syntax-dynamic-import', '@babel/plugin-proposal-class-properties']
           }
         }
-      },
-      {
-        test: /\.scss$/,
-        loader: cssText.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: function () {
-                  return [
-                    require('autoprefixer')
-                  ];
-                }
-              }
-            },
-            'sass-loader'
-          ]
-        })
       }
     ]
   }

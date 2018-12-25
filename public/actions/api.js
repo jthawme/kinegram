@@ -1,4 +1,4 @@
-const endpoint = window.wpValues ? window.wpValues.endpoint : '';
+const endpoint = '';
 
 export function safeFetch(route) {
   return fetch(`${endpoint}${route}`)

@@ -3,7 +3,7 @@ const path = require('path');
 const cli = require('./cli-parse.js');
 const replace = require('replace');
 
-const DEFAULT_PATH = 'app/components';
+const DEFAULT_PATH = 'public/components';
 
 const commands = [
   {
@@ -98,7 +98,7 @@ fs.stat(OUTPUT, (err, stats) => {
 
     replace({
       regex: 'SCSS',
-      replacement: _args.noscss ? '' : "require('./" + NAME + ".scss');",
+      replacement: _args.noscss ? '' : `import "${NAME}.scss";`,
       paths: [OUTPUT],
       recursive: true,
       silent: true,

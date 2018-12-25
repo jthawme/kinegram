@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { hot } from 'react-hot-loader/root'
 
 // 3rd Party Modules
 import classNames from 'classnames';
-const config = require('config.js');
 import {withRouter, Switch} from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Helmet from 'react-helmet';
@@ -17,7 +17,8 @@ import routes from './Routes';
 import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 
 // CSS, Requires
-require('./App.scss');
+import metaJson from '../../../context/meta.json';
+import "./App.scss";
 
 class App extends React.Component {
   static propTypes = {
@@ -41,10 +42,10 @@ class App extends React.Component {
     return (
       <div className={cls}>
         <Helmet
-          titleTemplate={`%s - ${config.name}`}
-          defaultTitle={config.name}
+          titleTemplate={`%s - ${metaJson.name}`}
+          defaultTitle={metaJson.name}
           meta={[
-            {name: 'description', content: config.description}
+            {name: 'description', content: metaJson.description}
           ]}/>
 
         <TransitionGroup component="main">
@@ -82,7 +83,7 @@ const mapDispatchToProps = (dispatch) => {
   }, dispatch);
 };
 
-export default withRouter(connect(
+export default hot(withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(App));
+)(App)));

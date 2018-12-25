@@ -10,49 +10,32 @@ const sharedRoot = shared._sharedRoot;
 delete shared._sharedRoot;
 
 module.exports = merge.smart(shared, {
+  mode: 'development',
   devtool: 'eval-source-map',
-  entry: [
-    'webpack-hot-middleware/client?reload=true'
-  ],
   output: {
-    path: path.join(sharedRoot, '/dist/'),
-    filename: '[name].js',
+    path: path.join(sharedRoot, 'dist'),
+    filename: 'js/[name].js',
+    chunkFilename: 'js/[name].js',
     publicPath: '/'
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 8080
+  },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development')
-    }),
-    new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
-      inject: 'body',
-      filename: 'index.html'
     })
   ],
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['react', 'env', 'react-hmre'],
-            plugins: ['syntax-dynamic-import', 'transform-class-properties']
-          }
-        }
-      },
-      {
         test: /\.scss$/,
         use: [
-          {
-            loader: "style-loader"
-          },
-          {
-            loader: "css-loader",
-          },
+          'style-loader',
+          'css-loader',
           {
             loader: 'postcss-loader',
             options: {
@@ -63,11 +46,20 @@ module.exports = merge.smart(shared, {
               }
             }
           },
-          {
-            loader: "sass-loader"
-          }
+          'sass-loader'
         ]
       },
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/react', '@babel/env'],
+            plugins: ['@babel/syntax-dynamic-import', '@babel/plugin-proposal-class-properties', 'react-hot-loader/babel']
+          }
+        }
+      }
     ]
   }
 });

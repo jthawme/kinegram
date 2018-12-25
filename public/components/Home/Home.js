@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 // Components
 
 // CSS, Requires
-require('./Home.scss');
+import "./Home.scss";
 
 class Home extends React.Component {
   static propTypes = {

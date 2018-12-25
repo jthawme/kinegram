@@ -1,4 +1,4 @@
-import { } from 'actions/app';
+import { } from '../actions/app';
 
 const initialState = {
 };
