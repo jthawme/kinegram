@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 // Redux
 
 // Components
+import Canvas from '../Canvas/Canvas';
 
 // CSS, Requires
 import "./Home.scss";
@@ -24,7 +25,7 @@ class Home extends React.Component {
 
     return (
       <div className={cls}>
-        Home
+        <Canvas/>
       </div>
     );
   }
