@@ -2,4 +2,8 @@
 
 .canvas {
   font-family: inherit;
+
+  &--hide {
+    opacity: 0;
+  }
 }
