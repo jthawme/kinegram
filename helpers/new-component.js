@@ -98,7 +98,7 @@ fs.stat(OUTPUT, (err, stats) => {
 
     replace({
       regex: 'SCSS',
-      replacement: _args.noscss ? '' : `import "${NAME}.scss";`,
+      replacement: _args.noscss ? '' : `import "./${NAME}.scss";`,
       paths: [OUTPUT],
       recursive: true,
       silent: true,

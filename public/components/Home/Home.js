@@ -5,11 +5,14 @@ import { connect } from 'react-redux';
 // 3rd Party Modules
 import classNames from 'classnames';
 import { bindActionCreators } from 'redux';
+import { FormControl, FormControlLabel, Radio, RadioGroup, Switch } from '@material-ui/core';
+import { CirclePicker } from 'react-color';
 
 // Redux
 
 // Components
 import Canvas from '../Canvas/Canvas';
+import Controls from './Controls';
 
 // const frames = [
 //   require('../../images/testframes/01.png'),
@@ -30,6 +33,16 @@ const frames = [
   require('../../images/testframes/02/08.png'),
 ];
 
+const frameRates = [
+  {label: 'Fast', value: '3'},
+  {label: 'Normal', value: '5'},
+  {label: 'Slow', value: '10'}
+];
+
+const colors = [
+  "#000000", "#F44336", "#3f51b5", "#00796b", "#546e7a",
+];
+
 // CSS, Requires
 import "./Home.scss";
 
@@ -39,27 +52,23 @@ class Home extends React.Component {
 
   state = {
     withBars: true,
-    frameRate: 5,
+    frameRate: '5',
     color: '#000000',
     canvasLoading: true
   };
 
-  onCheckboxChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.checked
-    });
-  }
+  handleChange = name => e => {
+    let value;
 
-  onValueChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
+    if (name === 'color') {
+      value = e.hex;
+    } else if (name === 'withBars') {
+      value = e.target.checked;
+    } else {
+      value = e.target.value
+    }
 
-  onRadioChange = (e) => {
-    this.setState({
-      [e.target.name]: parseInt(e.target.value, 10)
-    });
+    this.setState({ [name]: value });
   }
 
   setCanvasLoading = (loading) => {
@@ -77,41 +86,44 @@ class Home extends React.Component {
       }
     );
 
-    const frameRates = [3, 5, 10];
-
     return (
       <div className={cls}>
         <aside className="home__controls">
-          <ul>
-            <li>
-              <label className="home__controls__row">
-                <span className="home__controls__row__title">With Bars</span>
-                <span className="home__controls__row__input">
-                  <input type="checkbox" name="withBars" onChange={this.onCheckboxChange} value={1} checked={withBars}/>
-                </span>
-              </label>
-            </li>
-            <li>
-              <label className="home__controls__row">
-                <span className="home__controls__row__title">Color</span>
-                <span className="home__controls__row__input">
-                  <input type="color" name="color" onChange={this.onValueChange} value={color}/>
-                </span>
-              </label>
-            </li>
-            <li>
-              <label className="home__controls__row">
-                <span className="home__controls__row__title">Color</span>
-                <span className="home__controls__row__input">
-                  {
-                    frameRates.map(fr => {
-                      return <input key={fr} type="radio" name="frameRate" onChange={this.onRadioChange} value={fr} checked={frameRate === fr}/>
-                    })
-                  }
-                </span>
-              </label>
-            </li>
-          </ul>
+          <Controls>
+
+            <FormControl name="Speed" component="fieldset">
+              <RadioGroup
+                aria-label="Speed"
+                name="frameRate"
+                value={ frameRate }
+                onChange={this.handleChange('frameRate')}
+              >
+                {
+                  frameRates.map(fr => {
+                    return <FormControlLabel key={fr.label} value={fr.value} control={<Radio />} label={fr.label} />
+                  })
+                }
+              </RadioGroup>
+            </FormControl>
+
+            <FormControl name="With Bars" component="fieldset">
+              <Switch
+                color="secondary"
+                checked={ withBars }
+                onChange={this.handleChange('withBars')}
+                value="withBars"
+              />
+            </FormControl>
+
+            <FormControl name="Colour" component="fieldset">
+              <CirclePicker
+                className="color-correct"
+                colors={colors}
+                color={ color }
+                onChangeComplete={this.handleChange('color')}/>
+            </FormControl>
+            
+          </Controls>
         </aside>
         <div className="home__canvas">
           <Canvas
