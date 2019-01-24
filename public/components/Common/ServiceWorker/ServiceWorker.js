@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 // 3rd Party Modules
-import {bindActionCreators} from 'redux';
 
 // Redux
 
@@ -57,18 +55,4 @@ class ServiceWorker extends React.Component {
   }
 }
 
-const mapStateToProps = (store) => {
-  return {
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-
-  }, dispatch);
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ServiceWorker);
+export default ServiceWorker;

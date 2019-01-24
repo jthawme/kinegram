@@ -1,0 +1,12 @@
+@import '~css/base';
+
+.controlsblock {
+  font-family: inherit;
+
+  &__title {
+    @include font-size-regular;
+
+    padding: 0;
+    margin: 0;
+  }
+}

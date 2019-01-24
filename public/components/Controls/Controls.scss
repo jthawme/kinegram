@@ -1,0 +1,26 @@
+@import '~css/base';
+
+.controls {
+  display: flex;
+
+  &__modifiers,
+  &__actions {
+    display: flex;
+
+    flex: 1 0;
+
+    padding: rem($global-padding / 2);
+
+    > * {
+      margin-right: rem($global-padding / 2);
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &__timeline {
+    flex: 2 0;
+  }
+}

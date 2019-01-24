@@ -1,43 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { hot } from 'react-hot-loader/root'
 
 // 3rd Party Modules
 import classNames from 'classnames';
-import {withRouter, Switch} from 'react-router-dom';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import Helmet from 'react-helmet';
-import {bindActionCreators} from 'redux';
+import Iconer from '../Common/Iconer/Iconer';
 
 // Redux
 
 // Components
-import routes from './Routes';
 import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
+import Controls from '../Controls/Controls';
 
 // CSS, Requires
 import metaJson from '../../../context/meta.json';
 import "./App.scss";
 
+import logoImg from '../../images/logo.png';
+
 class App extends React.Component {
   static propTypes = {
-    children: PropTypes.node,
-    location: PropTypes.object
-  };
-
-  getCurrentKey(pathname) {
-    return pathname.split('/')[1] || '/';
+    children: PropTypes.node
   }
 
   render() {
-    const {location} = this.props;
-
     const cls = classNames(
       'app'
     );
-
-    const currentKey = this.getCurrentKey(location.pathname);
 
     return (
       <div className={cls}>
@@ -48,23 +38,10 @@ class App extends React.Component {
             {name: 'description', content: metaJson.description}
           ]}/>
 
-        <TransitionGroup component="main">
-          <CSSTransition
-            key={currentKey}
-            timeout={{
-              enter: 800,
-              exit: 200
-            }}
-            classNames="fadeMove"
-            mountOnEnter
-            unmountOnExit>
-            <div className={'app__routes-wrapper'}>
-              <Switch location={location}>
-                {routes}
-              </Switch>
-            </div>
-          </CSSTransition>
-        </TransitionGroup>
+        <img className="app__logo" src={logoImg} />
+
+        <Controls
+          className="app__controls"/>
 
         <ServiceWorker/>
       </div>
@@ -72,18 +49,4 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (store) => {
-  return {
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-
-  }, dispatch);
-};
-
-export default hot(withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App)));
+export default hot(App);

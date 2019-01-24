@@ -13,6 +13,8 @@
 
 $global-gutter: 20px;
 $global-padding: 32px;
+$outer-padding: 50px;
+$global-border-radius: 5px;
 
 @function column-width($cols, $total: 12) {
   $unit: (100%  / $total) ;
