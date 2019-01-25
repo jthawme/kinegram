@@ -15,8 +15,17 @@ import "./TimelineSlide.scss";
 class TimelineSlide extends React.PureComponent {
   static propTypes = {
     className: PropTypes.string,
-    image: PropTypes.string
+    image: PropTypes.string,
+    onImageAdded: PropTypes.func,
   };
+
+  static defaultProps = {
+    onImageAdded: () => {}
+  };
+
+  onFileChange = (e) => {
+    this.props.onImageAdded(e.target.files);
+  }
 
   render() {
     const { className, image } = this.props;
@@ -34,7 +43,10 @@ class TimelineSlide extends React.PureComponent {
         { image ? (
           <span />
         ) : (
-          <Iconer icon="add" size="medium"/>
+          <label>
+            <Iconer icon="add" size="medium"/>
+            <input type="file" onChange={this.onFileChange}/>
+          </label>
         )}
       </div>
     );

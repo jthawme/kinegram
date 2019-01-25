@@ -17,7 +17,8 @@ let startingArray = new Array(8).fill(undefined);
 
 class Timeline extends React.Component {
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    onImageAdded: PropTypes.func,
   };
 
   state = {
@@ -27,7 +28,9 @@ class Timeline extends React.Component {
 
   renderSlides(slides) {
     return slides.map((s, index) => {
-      return <TimelineSlide key={index} />;
+      return <TimelineSlide
+        onImageAdded={(files) => this.props.onImageAdded(files, index)}
+        key={index} />;
     });
   }
 

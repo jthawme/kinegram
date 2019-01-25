@@ -43,6 +43,7 @@ class Controls extends React.Component {
         </div>
         
         <Timeline
+          onImageAdded={this.props.onImageAdded}
           className="controls__timeline"/>
 
         <div className="controls__actions">

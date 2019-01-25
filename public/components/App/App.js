@@ -24,6 +24,18 @@ class App extends React.Component {
     children: PropTypes.node
   }
 
+  onImageAdded = (files, index = false) => {
+    const file = files[0];
+
+    if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        console.log(reader.result);
+      });
+      reader.readAsDataURL(file);
+    }
+  }
+
   render() {
     const cls = classNames(
       'app'
@@ -45,6 +57,7 @@ class App extends React.Component {
         </div>
 
         <Controls
+          onImageAdded={this.onImageAdded}
           className="app__controls"/>
 
         <ServiceWorker/>
