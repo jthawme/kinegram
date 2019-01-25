@@ -21,7 +21,8 @@ class Timeline extends React.Component {
   };
 
   state = {
-    slides: startingArray
+    slides: startingArray,
+    pointer: 0
   };
 
   renderSlides(slides) {
@@ -30,26 +31,65 @@ class Timeline extends React.Component {
     });
   }
 
+  leftArrowDisabled = () => {
+    return this.state.pointer === 0;
+  }
+
+  rightArrowDisabled = () => {
+    return this.state.pointer >= this.state.slides.length - 1;
+  }
+
+  movePointer(change) {
+    let target = this.state.pointer + change;
+
+    if (target >= 0 && target < this.state.slides.length) {
+      this.setState({
+        pointer: target
+      });
+    }
+  }
+
   render() {
     const { className } = this.props;
-    const { slides } = this.state;
+    const { slides, pointer } = this.state;
 
     const cls = classNames(
       className,
       'timeline'
     );
 
+    const leftArrowCls = classNames(
+      'timeline__arrow',
+      'timeline__arrow--left',
+      {
+        'timeline__arrow--disabled': this.leftArrowDisabled()
+      }
+    );
+
+    const rightArrowCls = classNames(
+      'timeline__arrow',
+      'timeline__arrow--right',
+      {
+        'timeline__arrow--disabled': this.rightArrowDisabled()
+      }
+    );
+
+    const slide = 140;
+    const trackStyle = {
+      transform: `translate3d(${(slide * pointer) * -1}px, 0, 0)`
+    }
+
     return (
       <div className={cls}>
-        <button className="timeline__arrow timeline__arrow--left" onClick={() => {}}>
+        <button className={leftArrowCls} onClick={() => this.movePointer(-1)}>
           <Iconer icon="arrow_left" size="small"/>
         </button>
         <div className="timeline__slider">
-          <div className="timeline__track">
+          <div className="timeline__track" style={trackStyle}>
             { this.renderSlides(slides) }
           </div>
         </div>
-        <button className="timeline__arrow timeline__arrow--right" onClick={() => {}}>
+        <button className={rightArrowCls} onClick={() => this.movePointer(1)}>
           <Iconer icon="arrow_left" size="small"/>
         </button>
       </div>
