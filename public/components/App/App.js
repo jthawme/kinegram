@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader/root'
 // 3rd Party Modules
 import classNames from 'classnames';
 import Helmet from 'react-helmet';
-import Iconer from '../Common/Iconer/Iconer';
+import DropZone from 'react-dropzone';
 
 // Redux
 
@@ -19,24 +19,68 @@ import "./App.scss";
 
 import logoImg from '../../images/logo.png';
 
+const MAX_SLIDES = 8;
+
 class App extends React.Component {
   static propTypes = {
     children: PropTypes.node
   }
 
-  onImageAdded = (files, index = false) => {
-    const file = files[0];
+  state = {
+    images: []
+  }
 
-    if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        console.log(reader.result);
-      });
-      reader.readAsDataURL(file);
+  onImageAdded = (files, index = false) => {
+    const _files = [];
+    for (let i = 0; i < files.length; i++) {
+      _files.push(files[i]);
     }
+
+    Promise.all(_files.map(f => {
+      return this.getFileUrl(f)
+    }))
+      .then(fileUrls => {
+        const images = this.state.images.slice();
+        
+        const accepted = fileUrls.map(f => f);
+        let start = parseInt(index) >= 0 ? index : images.length;
+
+        if (start >= MAX_SLIDES) {
+          start = 0;
+        }
+
+        const left = MAX_SLIDES - start;
+        const filtered = accepted.slice(0, left);
+        
+        const args = [start, filtered.length].concat(filtered);
+
+        Array.prototype.splice.apply(images, args);
+
+        this.setState({ images });
+      });
+  }
+
+  getFileUrl(file) {
+    return new Promise((resolve, reject) => {
+      if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+          resolve(reader.result);
+        });
+        reader.readAsDataURL(file);
+      } else {
+        resolve(false);
+      }
+    });
+  }
+
+  onDrop = (files) => {
+    this.onImageAdded(files);
   }
 
   render() {
+    const { images } = this.state;
+
     const cls = classNames(
       'app'
     );
@@ -52,11 +96,20 @@ class App extends React.Component {
 
         <img className="app__logo" src={logoImg} />
 
-        <div className="app__canvas">
-          canvas
-        </div>
+        <DropZone accept="image/*" onDrop={this.onDrop}>
+          {({ getRootProps, getInputProps, isDragActive}) => {
+            return (
+              <div
+                {...getRootProps()}
+                className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
+                canvas
+              </div>
+            )
+          }}
+        </DropZone>
 
         <Controls
+          images={images}
           onImageAdded={this.onImageAdded}
           className="app__controls"/>
 

@@ -11,7 +11,7 @@
   border-radius: rem($global-border-radius);
   cursor: pointer;
 
-  opacity: 0.1;
+  opacity: 0.5;
 
   transition: {
     property: opacity;
@@ -19,7 +19,21 @@
   }
 
   &--no-image {
+    opacity: 0.1;
+
     border: rem(2px) dashed $color-text;
+  }
+
+  &__poster {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    background: {
+      position: center;
+      size: cover;
+    };
   }
 
   label {

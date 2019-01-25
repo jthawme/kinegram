@@ -40,14 +40,14 @@ class TimelineSlide extends React.PureComponent {
 
     return (
       <div className={cls}>
+        <label>
         { image ? (
-          <span />
+          <span className="timelineslide__poster" style={{backgroundImage: `url(${image})`}}/>
         ) : (
-          <label>
             <Iconer icon="add" size="medium"/>
-            <input type="file" onChange={this.onFileChange}/>
-          </label>
         )}
+          <input type="file" onChange={this.onFileChange}/>
+        </label>
       </div>
     );
   }

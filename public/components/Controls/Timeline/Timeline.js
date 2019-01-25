@@ -26,10 +26,11 @@ class Timeline extends React.Component {
     pointer: 0
   };
 
-  renderSlides(slides) {
+  renderSlides(slides, images) {
     return slides.map((s, index) => {
       return <TimelineSlide
         onImageAdded={(files) => this.props.onImageAdded(files, index)}
+        image={images[index]}
         key={index} />;
     });
   }
@@ -53,7 +54,7 @@ class Timeline extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, images } = this.props;
     const { slides, pointer } = this.state;
 
     const cls = classNames(
@@ -89,7 +90,7 @@ class Timeline extends React.Component {
         </button>
         <div className="timeline__slider">
           <div className="timeline__track" style={trackStyle}>
-            { this.renderSlides(slides) }
+            { this.renderSlides(slides, images) }
           </div>
         </div>
         <button className={rightArrowCls} onClick={() => this.movePointer(1)}>

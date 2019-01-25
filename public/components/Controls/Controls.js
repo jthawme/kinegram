@@ -22,7 +22,7 @@ class Controls extends React.Component {
   };
 
   render() {
-    const { className } = this.props;
+    const { className, images } = this.props;
 
     const cls = classNames(
       className,
@@ -43,6 +43,7 @@ class Controls extends React.Component {
         </div>
         
         <Timeline
+          images={images}
           onImageAdded={this.props.onImageAdded}
           className="controls__timeline"/>
 
