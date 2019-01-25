@@ -22,7 +22,7 @@ class Controls extends React.Component {
   };
 
   render() {
-    const { className, images } = this.props;
+    const { className, images, color, speed } = this.props;
 
     const cls = classNames(
       className,
@@ -33,12 +33,16 @@ class Controls extends React.Component {
       <div className={cls}>
         <div className="controls__modifiers">
           <ControlsBlock title="Color">
-            <ColorPicker/>
+            <ColorPicker
+              color={color}
+              onChange={(color) => this.props.onAttributeChange('color', color)}/>
           </ControlsBlock>
           <ControlsBlock title="Speed">
             <Radioish
+              onChange={(option) => this.props.onAttributeChange('speed', option)}
               options={[1, 2, 5]}
-              defaultValue={2}/>
+              defaultValue={speed}
+              value={speed}/>
           </ControlsBlock>
         </div>
         

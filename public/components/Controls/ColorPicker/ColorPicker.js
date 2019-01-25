@@ -18,10 +18,13 @@ class ColorPicker extends React.Component {
     className: PropTypes.string
   };
 
-  state = {
-    display: false,
-    color: 'red'
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      display: false
+    };
+  }
 
   togglePicker = () => {
     if (this.state.display) {
@@ -44,12 +47,13 @@ class ColorPicker extends React.Component {
   }
 
   onChangeComplete = (color) => {
-    this.setState({ color: color.hex, display: false });
+    this.setState({ display: false });
+    this.props.onChange(color.hex);
   }
 
   render() {
-    const { className } = this.props;
-    const { display, color } = this.state;
+    const { className, color } = this.props;
+    const { display } = this.state;
 
     const cls = classNames(
       className,

@@ -13,7 +13,8 @@ import Iconer from '../../Common/Iconer/Iconer';
 // CSS, Requires
 import "./Timeline.scss";
 
-let startingArray = new Array(8).fill(undefined);
+import { MAX_SLIDES } from '../../App/constants';
+let startingArray = new Array(MAX_SLIDES).fill(undefined);
 
 class Timeline extends React.Component {
   static propTypes = {

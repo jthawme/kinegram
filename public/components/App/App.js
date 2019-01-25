@@ -19,7 +19,7 @@ import "./App.scss";
 
 import logoImg from '../../images/logo.png';
 
-const MAX_SLIDES = 8;
+import { MAX_SLIDES } from './constants';
 
 class App extends React.Component {
   static propTypes = {
@@ -27,7 +27,15 @@ class App extends React.Component {
   }
 
   state = {
+    color: '#000000',
+    speed: 2,
     images: []
+  }
+
+  onAttributeChange = (key, value) => {
+    this.setState({
+      [key]: value
+    });
   }
 
   onImageAdded = (files, index = false) => {
@@ -79,7 +87,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { images } = this.state;
+    const { images, color, speed } = this.state;
 
     const cls = classNames(
       'app'
@@ -109,7 +117,10 @@ class App extends React.Component {
         </DropZone>
 
         <Controls
+          color={color}
+          speed={speed}
           images={images}
+          onAttributeChange={this.onAttributeChange}
           onImageAdded={this.onImageAdded}
           className="app__controls"/>
 

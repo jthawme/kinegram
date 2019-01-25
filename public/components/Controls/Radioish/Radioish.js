@@ -25,12 +25,16 @@ class Radioish extends React.Component {
       selected: initial >= 0 ? initial : 0
     };
   }
+  
+  componentDidUpdate(oldProps) {
+    if (oldProps.value !== this.props.value) {
+      this.setState({
+        selected: this.state.options.findIndex(opt => opt === this.props.value)
+      });
+    }
+  }
 
   onSelect = (option) => {
-    this.setState({
-      selected: this.state.options.findIndex(opt => opt === option)
-    });
-
     this.props.onChange(option);
   }
 
