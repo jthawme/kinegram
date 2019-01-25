@@ -17,7 +17,7 @@ class Iconer extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     icon: PropTypes.string.isRequired,
-    size: PropTypes.oneOf(['free', 'small', 'medium', 'large'])
+    size: PropTypes.oneOf(['free', 'xsmall', 'small', 'medium', 'large'])
   };
 
   static defaultProps = {

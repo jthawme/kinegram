@@ -1,0 +1,64 @@
+@import '~css/base';
+
+.radioish {
+  display: flex;
+
+  margin: rem(5px) 0;
+  font-family: inherit;
+
+  cursor: pointer;
+
+  &__radio {
+    position: relative;
+
+    display: block;
+
+
+    width: rem(24px);
+    height: rem(24px);
+
+    background-color: $color-text;
+
+    border-radius: 100%;
+
+    margin-right: rem(5px);
+
+    &--selected {
+      background-color: $color-accent;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:before {
+      position: absolute;
+
+      top: 50%;
+      left: 50%;
+
+      width: 50%;
+      height: 50%;
+
+      border-radius: 100%;
+
+      content: '';
+
+      transform: translate3d(-50%, -50%, 0) scale(0);
+      transition: {
+        property: transform;
+        duration: 0.25s;
+      }
+
+      background-color: white;
+    }
+
+    &:not(.radioish__radio--selected):hover:before {
+      transform: translate3d(-50%, -50%, 0) scale(0.25);
+    }
+
+    &--selected:before {
+      transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+  }
+}

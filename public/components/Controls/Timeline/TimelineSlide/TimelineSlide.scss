@@ -6,11 +6,11 @@
   align-items: center;
   justify-content: center;
 
-  color: $color-grey;
+  color: $color-text;
 
   border-radius: rem($global-border-radius);
 
-  opacity: 0.5;
+  opacity: 0.1;
 
   cursor: pointer;
 
@@ -20,7 +20,7 @@
   }
 
   &--no-image {
-    border: rem(2px) dashed $color-grey;
+    border: rem(2px) dashed $color-text;
   }
 
   &:hover {

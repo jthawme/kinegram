@@ -1,0 +1,13 @@
+@import '~css/base';
+
+.iconbutton {
+  padding: rem(5px);
+  
+  border-radius: rem($global-border-radius);
+  line-height: 0;
+
+  background-color: $color-accent;
+  color: white;
+
+  cursor: pointer;
+}

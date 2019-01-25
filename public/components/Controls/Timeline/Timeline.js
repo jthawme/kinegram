@@ -25,8 +25,8 @@ class Timeline extends React.Component {
   };
 
   renderSlides(slides) {
-    return slides.map(s => {
-      return <TimelineSlide />;
+    return slides.map((s, index) => {
+      return <TimelineSlide key={index} />;
     });
   }
 

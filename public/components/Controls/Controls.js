@@ -8,7 +8,10 @@ import classNames from 'classnames';
 
 // Components
 import ControlsBlock from './ControlsBlock/ControlsBlock';
+import ColorPicker from './ColorPicker/ColorPicker';
+import Radioish from './Radioish/Radioish';
 import Timeline from './Timeline/Timeline';
+import IconButton from '../Common/Buttons/IconButton';
 
 // CSS, Requires
 import "./Controls.scss";
@@ -30,10 +33,12 @@ class Controls extends React.Component {
       <div className={cls}>
         <div className="controls__modifiers">
           <ControlsBlock title="Color">
-            Hey there
+            <ColorPicker/>
           </ControlsBlock>
           <ControlsBlock title="Speed">
-            Hey there
+            <Radioish
+              options={[1, 2, 5]}
+              defaultValue={2}/>
           </ControlsBlock>
         </div>
         
@@ -42,10 +47,10 @@ class Controls extends React.Component {
 
         <div className="controls__actions">
           <ControlsBlock title="Gif">
-            Hey there
+            <IconButton icon="download" onClick={() => {}}/>
           </ControlsBlock>
           <ControlsBlock title="Export">
-            Hey there
+            <IconButton icon="save" onClick={() => {}}/>
           </ControlsBlock>
         </div>
       </div>
