@@ -29,3 +29,7 @@ $global-border-radius: 5px;
     margin-right: 0;
   }
 }
+
+@mixin global-shadow {
+  box-shadow: 0 rem(1px) rem(6px) rem(-2px);
+}

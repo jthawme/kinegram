@@ -1,0 +1,72 @@
+@import '~css/base';
+
+.timeline {
+  position: relative;
+
+  font-family: inherit;
+
+  &__slider {
+    width: 100%;
+    height: 100%;
+
+    padding: 0 rem(10px);
+
+    overflow: hidden;
+  }
+
+  &__track {
+    display: flex;
+
+    align-items: stretch;
+    
+    height: 100%;
+
+    .timelineslide {
+      flex: 0 0 rem(120px);
+
+      margin: rem(10px);
+    }
+  }
+}
+
+.timeline__arrow {
+  @include global-shadow;
+
+  position: absolute;
+
+  top: rem(10px);
+  bottom: rem(10px);
+
+  background-color: $color-text;
+  color: white;
+
+  line-height: 0;
+
+  border-radius: rem($global-border-radius);
+
+  transition: {
+    property: transform;
+    duration: 0.15s;
+  }
+
+  &--disabled {
+    background-color: $color-grey;
+  }
+
+  &--left {
+    left: -1vw;
+
+    &:not(.timeline__arrow--disabled):hover {
+      transform: translate3d(-15%, 0, 0);
+    }
+  }
+
+  &--right {
+    right: -1vw;
+    transform: rotate(180deg);
+
+    &:not(.timeline__arrow--disabled):hover {
+      transform: translate3d(15%, 0, 0) rotate(180deg);
+    }
+  }
+}

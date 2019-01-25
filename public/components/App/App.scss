@@ -4,6 +4,11 @@
 .app {
   position: relative;
 
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
   height: 100%;
 
   &__logo {
@@ -15,14 +20,28 @@
     width: rem(36px);
   }
 
+  &__canvas {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 55vw;
+    height: 80%;
+
+    background-color: $color-grey;
+  }
+
   &__controls {
+    @include global-shadow;
+    
     position: fixed;
 
     bottom: rem($outer-padding);
     left: rem($outer-padding);
     right: rem($outer-padding);
 
-    box-shadow: 0 rem(1px) rem(6px) rem(-2px);
     border-radius: rem($global-border-radius);
+    background-color: white;
   }
 }

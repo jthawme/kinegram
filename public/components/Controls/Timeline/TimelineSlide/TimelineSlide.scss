@@ -1,0 +1,29 @@
+@import '~css/base';
+
+.timelineslide {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: $color-grey;
+
+  border-radius: rem($global-border-radius);
+
+  opacity: 0.5;
+
+  cursor: pointer;
+
+  transition: {
+    property: opacity;
+    duration: 0.25s;
+  }
+
+  &--no-image {
+    border: rem(2px) dashed $color-grey;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}

@@ -40,6 +40,10 @@ class App extends React.Component {
 
         <img className="app__logo" src={logoImg} />
 
+        <div className="app__canvas">
+          canvas
+        </div>
+
         <Controls
           className="app__controls"/>
 

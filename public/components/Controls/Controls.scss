@@ -3,6 +3,8 @@
 .controls {
   display: flex;
 
+  height: rem(110px);
+
   &__modifiers,
   &__actions {
     display: flex;
@@ -21,6 +23,12 @@
   }
 
   &__timeline {
-    flex: 2 0;
+    flex: 0 0 53vw;
+    max-width: 53vw;
+
+    margin: 0 rem(10px);
+
+    border-left: rem(1px) solid $color-grey;
+    border-right: rem(1px) solid $color-grey;
   }
 }

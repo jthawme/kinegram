@@ -8,6 +8,7 @@ import classNames from 'classnames';
 
 // Components
 import ControlsBlock from './ControlsBlock/ControlsBlock';
+import Timeline from './Timeline/Timeline';
 
 // CSS, Requires
 import "./Controls.scss";
@@ -35,9 +36,10 @@ class Controls extends React.Component {
             Hey there
           </ControlsBlock>
         </div>
-        <div className="controls__timeline">
-          Timeline
-        </div>
+        
+        <Timeline
+          className="controls__timeline"/>
+
         <div className="controls__actions">
           <ControlsBlock title="Gif">
             Hey there
