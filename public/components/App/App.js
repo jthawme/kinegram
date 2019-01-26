@@ -12,15 +12,16 @@ import DropZone from 'react-dropzone';
 // Components
 import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 import Controls from '../Controls/Controls';
+import Status, {VALID_STATUSES} from '../Status/Status';
 
 // CSS, Requires
+import convertTo1Bit from './convert';
+import { MAX_SLIDES } from './constants';
+import logoImg from '../../images/logo.png';
 import metaJson from '../../../context/meta.json';
 import "./App.scss";
 
-import logoImg from '../../images/logo.png';
 
-import convertTo1Bit from './convert';
-import { MAX_SLIDES } from './constants';
 
 class App extends React.Component {
   static propTypes = {
@@ -31,7 +32,8 @@ class App extends React.Component {
     color: '#000000',
     speed: 2,
     images: [],
-    disabled: false
+    disabled: false,
+    loading: false
   }
 
   onAttributeChange = (key, value) => {
@@ -41,7 +43,7 @@ class App extends React.Component {
   }
 
   onImageAdded = (files, index = false) => {
-    this.setState({ disabled: true });
+    this.setState({ disabled: true, loading: true });
 
     const _files = [];
     for (let i = 0; i < files.length; i++) {
@@ -71,7 +73,7 @@ class App extends React.Component {
 
         Array.prototype.splice.apply(images, args);
 
-        this.setState({ images, disabled: false });
+        this.setState({ images, disabled: false, loading: false });
       });
   }
 
@@ -99,6 +101,14 @@ class App extends React.Component {
     this.onImageAdded(files);
   }
 
+  getStatus() {
+    if (this.state.disabled) {
+      return VALID_STATUSES.LOADING;
+    }
+
+    return false;
+  }
+
   render() {
     const { images, color, speed } = this.state;
 
@@ -116,6 +126,10 @@ class App extends React.Component {
           ]}/>
 
         <img className="app__logo" src={logoImg} />
+
+        <Status
+          className="app__status"
+          command={this.getStatus()}/>
 
         <DropZone accept="image/*" onDrop={this.onDrop}>
           {({ getRootProps, getInputProps, isDragActive}) => {

@@ -1,0 +1,73 @@
+@import '~css/base';
+
+.status {
+  display: flex;
+
+  align-items: center;
+  font-family: inherit;
+
+  height: rem(10px);
+
+  padding: 0 0 rem(20px) rem(20px);
+
+  opacity: 0;
+
+  transition: {
+    duration: 0.15s;
+    property: opacity;
+  }
+
+  &--display {
+    opacity: 1;
+  }
+
+  &__text {
+    @include font-size-small;
+    @include codeFont;
+
+    font-weight: bold;
+    text-transform: uppercase;
+
+    opacity: 0;
+
+    transition: {
+      duration: 0.35s;
+      property: opacity;
+    }
+  }
+
+  &__symbol {
+    display: inline-block;
+
+    width: rem(8px);
+    height: rem(8px);
+
+    margin-left: rem(10px);
+
+    background-color: $color-accent;
+
+    border-radius: 100%;
+
+    animation: {
+      name: PULSE;
+      direction: alternate;
+      duration: 1s;
+      iteration-count: infinite;
+    }
+  }
+
+  &:hover {
+    .status__text {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes PULSE {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
