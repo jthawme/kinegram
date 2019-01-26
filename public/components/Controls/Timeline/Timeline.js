@@ -20,6 +20,7 @@ class Timeline extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     onImageAdded: PropTypes.func,
+    onImageRemoved: PropTypes.func,
   };
 
   state = {
@@ -30,6 +31,7 @@ class Timeline extends React.Component {
   renderSlides(slides, images) {
     return slides.map((s, index) => {
       return <TimelineSlide
+        onClearImage={(image) => this.props.onImageRemoved(image, index)}
         onImageAdded={(files) => this.props.onImageAdded(files, index)}
         image={images[index]}
         key={index} />;

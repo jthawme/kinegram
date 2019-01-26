@@ -19,6 +19,7 @@ import "./App.scss";
 
 import logoImg from '../../images/logo.png';
 
+import convertTo1Bit from './convert';
 import { MAX_SLIDES } from './constants';
 
 class App extends React.Component {
@@ -29,7 +30,8 @@ class App extends React.Component {
   state = {
     color: '#000000',
     speed: 2,
-    images: []
+    images: [],
+    disabled: false
   }
 
   onAttributeChange = (key, value) => {
@@ -39,6 +41,8 @@ class App extends React.Component {
   }
 
   onImageAdded = (files, index = false) => {
+    this.setState({ disabled: true });
+
     const _files = [];
     for (let i = 0; i < files.length; i++) {
       _files.push(files[i]);
@@ -48,9 +52,12 @@ class App extends React.Component {
       return this.getFileUrl(f)
     }))
       .then(fileUrls => {
+        return fileUrls.filter(f => f);
+      })
+      .then(convertTo1Bit)
+      .then(fileUrls => {
         const images = this.state.images.slice();
         
-        const accepted = fileUrls.map(f => f);
         let start = parseInt(index) >= 0 ? index : images.length;
 
         if (start >= MAX_SLIDES) {
@@ -58,14 +65,20 @@ class App extends React.Component {
         }
 
         const left = MAX_SLIDES - start;
-        const filtered = accepted.slice(0, left);
+        const filtered = fileUrls.slice(0, left);
         
         const args = [start, filtered.length].concat(filtered);
 
         Array.prototype.splice.apply(images, args);
 
-        this.setState({ images });
+        this.setState({ images, disabled: false });
       });
+  }
+
+  onImageRemoved = (file, index) => {
+    const images = this.state.images.slice();
+    images.splice(index, 1);
+    this.setState({ images });
   }
 
   getFileUrl(file) {
@@ -110,6 +123,12 @@ class App extends React.Component {
               <div
                 {...getRootProps()}
                 className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
+                { isDragActive ? (
+                  <div className="app__canvas__drop-message">
+                    <span>Drop images to add the frames</span>
+                  </div>
+                ) : null }
+                <input {...getInputProps()} />
                 canvas
               </div>
             )
@@ -122,6 +141,7 @@ class App extends React.Component {
           images={images}
           onAttributeChange={this.onAttributeChange}
           onImageAdded={this.onImageAdded}
+          onImageRemoved={this.onImageRemoved}
           className="app__controls"/>
 
         <ServiceWorker/>

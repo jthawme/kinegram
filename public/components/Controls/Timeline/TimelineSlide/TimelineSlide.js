@@ -27,6 +27,10 @@ class TimelineSlide extends React.PureComponent {
     this.props.onImageAdded(e.target.files);
   }
 
+  onClear = () => {
+    this.props.onClearImage(this.props.image);
+  }
+
   render() {
     const { className, image } = this.props;
 
@@ -40,13 +44,16 @@ class TimelineSlide extends React.PureComponent {
 
     return (
       <div className={cls}>
+        { image ? (
+          <span className="timelineslide__clear" onClick={this.onClear}><Iconer icon="close" size="xsmall"/></span>
+        ) : null }
         <label>
         { image ? (
           <span className="timelineslide__poster" style={{backgroundImage: `url(${image})`}}/>
         ) : (
             <Iconer icon="add" size="medium"/>
         )}
-          <input type="file" onChange={this.onFileChange}/>
+          <input accept="image/*" type="file" onChange={this.onFileChange}/>
         </label>
       </div>
     );

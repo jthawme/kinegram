@@ -1,6 +1,7 @@
 @import '~css/base';
 
 .timelineslide {
+  position: relative;
   display: flex;
 
   align-items: center;
@@ -36,6 +37,24 @@
     };
   }
 
+  &__clear {
+    position: absolute;
+
+    top: rem(-10px);
+    right: rem(-10px);
+
+    padding: rem(5px);
+
+    color: white;
+
+    background-color: $color-accent;
+    border-radius: 100%;
+
+    line-height: 0;
+
+    opacity: 0;
+  }
+
   label {
     display: flex;
 
@@ -54,5 +73,13 @@
 
   &:hover {
     opacity: 1;
+
+    .timelineslide__clear {
+      opacity: 1;
+
+      &:hover {
+        opacity: 0.75;
+      }
+    }
   }
 }
