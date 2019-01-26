@@ -13,10 +13,11 @@ import DropZone from 'react-dropzone';
 import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 import Controls from '../Controls/Controls';
 import Status, {VALID_STATUSES} from '../Status/Status';
+import Canvas from '../Canvas/Canvas';
 
 // CSS, Requires
 import convertTo1Bit from './convert';
-import { MAX_SLIDES } from './constants';
+import { MAX_SLIDES, SPEEDS } from './constants';
 import logoImg from '../../images/logo.png';
 import metaJson from '../../../context/meta.json';
 import "./App.scss";
@@ -30,7 +31,7 @@ class App extends React.Component {
 
   state = {
     color: '#000000',
-    speed: 2,
+    speed: SPEEDS[1],
     images: [],
     disabled: false,
     loading: false
@@ -143,7 +144,11 @@ class App extends React.Component {
                   </div>
                 ) : null }
                 <input {...getInputProps()} />
-                canvas
+                
+                <Canvas
+                  color={color}
+                  speed={speed}
+                  frames={images}/>
               </div>
             )
           }}

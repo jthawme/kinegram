@@ -11,69 +11,35 @@ import classNames from 'classnames';
 // CSS, Requires
 import "./Canvas.scss";
 import { imageLoaderManager, imageLoader } from '../../utils/imageLoader';
+import { getIntrinsicHeight } from '../../utils/intrinsic';
+import { getBars } from './Drawing';
+
+const CWIDTH = 640;
+const CHEIGHT = 480;
+const LINEWID = 1;
 
 class Canvas extends React.Component {
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    onLoading: PropTypes.func,
   };
 
   static defaultProps = {
-    lineWidth: 1,
-    frameRate: 5,
-    color: 'black',
-    withBars: true,
     onLoading: () => {}
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      size: 400,
-      frames: frames,
-      lineWid: 1,
-      frameRate: 5,
-      color: 'red',
-      withBars: true,
-      playing: false
-    };
-
-    this.initialLoad = false;
-    this.frame = 0;
-    this.counter = 0;
+  state = {
+    running: true,
+    imgObjects: []
   }
 
-  static getDerivedStateFromProps(props, state) {
-    return {
-      frames: props.frames,
-      lineWid: props.lineWidth,
-      frameRate: props.frameRate,
-      color: props.color,
-      withBars: props.withBars,
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return (nextState.loading !== this.state.loading);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.loading !== this.state.loading) {
-      this.props.onLoading(this.state.loading);
-    }
-
-    if (this.gotNewFrames(prevProps.frames, this.props.frames) && this.initialLoad) {
-      this.reset();
-    }
-  }
-
-  gotNewFrames(prevFrames, frames) {
-    if (prevFrames.length !== frames.length) {
+  static arrayDiff(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
       return true;
     }
 
-    for (let i = 0; i < prevFrames.length; i++) {
-      if (prevFrames[i] !== frames[i]) {
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
         return true;
       }
     }
@@ -81,167 +47,148 @@ class Canvas extends React.Component {
     return false;
   }
 
-  getRef = (ref) => {
-    this.canvasRef = ref;
+  componentDidMount() {
+    this.frame = 0;
+    this.counter = 0;
+  }
 
-    if (ref) {
-      this.ctx = this.canvasRef.getContext('2d');
-      this.setDimensions(this.state.size);
+  componentDidUpdate(oldProps) {
+    if (Canvas.arrayDiff(this.props.frames, oldProps.frames)) {
+      this.props.onLoading(true);
+      this.stopEngine();
 
-      this.initialLoad = true;
-      this.reset();
+      this.loadNewFrames(this.props.frames)
+        .then(this.commitImageObjects)
+        .then(this.cutUpFrames)
+        .then(this.compositeFrames)
+        .then(img => {
+          this.setState({
+            cutUp: img
+          });
+
+          this.startEngine();
+          this.props.onLoading(false);
+        });
     }
   }
-  
-  reset() {
-    this.loadEngine(this.state.frames)
-      .then(() => {
-        this.loop();
-      });
+
+  getRef = (ref) => {
+    this.canvas = ref;
+
+    if (ref) {
+      this.ctx = this.canvas.getContext('2d');
+      this.setDimensions(CWIDTH, CHEIGHT);
+    }
   }
 
-  loadEngine = (frames) => {
-    return new Promise((resolve, reject) => {
-      this.setState({
-        loading: true,
-        playing: false
-      }, () => {
-        Promise.all([
-          this.createFrames(frames),
-          this.delayedTimer()
-        ])
-          .then(() => {
-            this.setState({
-              loading: false,
-              playing: true
-            }, () => {
-              resolve();
-            });
-          });
-      });
-    });
-  }
-
-  delayedTimer() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
-  }
-
-  createFrames(frames) {
-    return imageLoaderManager(frames)
-      .then(this.create);
-  }
-
-  setDimensions = (size) => {
+  setDimensions = (width, height) => {
     const dpr = window.devicePixelRatio;
-    this.canvasRef.width = size * dpr;
-    this.canvasRef.height = size * dpr;
-    this.canvasRef.style.width = `${size}px`;
-    this.canvasRef.style.height = `${size}px`;
+    this.canvas.width = width * dpr;
+    this.canvas.height = height * dpr;
+    this.canvas.style.width = `${width}px`;
+    this.canvas.style.height = `${height}px`;
     this.ctx.scale(dpr, dpr);
   }
 
-  create = (images) => {
-    const { size } = this.state;
-
-    this.ctx.clearRect(0, 0, size, size);
-    this.bars = this.getBars();
-    this.ctx.fill(this.bars);
-    
-    return Promise.all(
-      images.map((i, index) => {
-        return this.getFrame(i, index);
-      })
-    )
-      .then(frames => {
-        this.frameImages = frames;
-        return frames;
-      });
+  loadNewFrames = (frames) => {
+    return imageLoaderManager(frames);
   }
 
-  draw = () => {
-    const { size, lineWid, frames, color, withBars } = this.state;
-    const block = (frames.length * lineWid) + lineWid;
-    const dpr = window.devicePixelRatio;
-
-    this.ctx.clearRect(0, 0, size, size);
-    
-    this.frameImages.forEach((f, index) => {
-      this.ctx.drawImage(f, 0, 0, f.width / dpr, f.height / dpr);
+  commitImageObjects = (imgObjects) => {
+    return new Promise((resolve, reject) => {
+      this.setState({ imgObjects }, () => resolve(imgObjects));
     });
-    this.ctx.restore();
+  }
 
-    if (withBars) {
+  cutUpFrames = () => {
+    this.bars = getBars(CWIDTH, CHEIGHT, LINEWID, this.state.imgObjects.length);
+
+    const cutUps = this.state.imgObjects.map((img, index) => {
       this.ctx.save();
-      this.ctx.translate(((this.counter % frames.length) * lineWid) - block, 0);
+      this.ctx.clearRect(0, 0, CWIDTH, CHEIGHT);
+
+      const h = getIntrinsicHeight(CWIDTH, img.width, img.height);
+      const yOffset = (CHEIGHT - h) / 2;
+      this.ctx.drawImage(img, 0, yOffset, CWIDTH, h);
+  
+      this.ctx.globalCompositeOperation = 'destination-out';
+  
+      this.ctx.translate(index * LINEWID, 0);
       this.ctx.fill(this.bars);
       this.ctx.restore();
-    }
+
+      return this.canvas.toDataURL('image/png');
+    });
+    
+    return imageLoaderManager(cutUps);
+  }
+
+  compositeFrames = (frames) => {
+    const dpr = window.devicePixelRatio;
+    frames.forEach(f => {
+      this.ctx.drawImage(f, 0, 0, f.width / dpr, f.height / dpr);
+    });
+
+    return imageLoader(this.canvas.toDataURL('image/png'));
+  }
+
+  stopEngine = () => {
+    this.setState({
+      running: false
+    }, () => {
+      cancelAnimationFrame(this.raf);
+    });
+  }
+
+  startEngine = () => {
+    this.setState({
+      running: true
+    }, () => {
+      this.raf = requestAnimationFrame(this.loop);
+    });
+  }
+
+  draw = (counter) => {
+    const { cutUp } = this.state;
+    const { frames, color } = this.props;
+    const block = (frames.length * LINEWID) + LINEWID;
+    const dpr = window.devicePixelRatio;
+
+    this.ctx.clearRect(0, 0, CWIDTH, CHEIGHT);
+    this.ctx.drawImage(cutUp, 0, 0, cutUp.width / dpr, cutUp.height / dpr);
+
+    this.ctx.save();
+    this.ctx.fillStyle = 'black';
+    this.ctx.translate(((counter % frames.length) * LINEWID) - block, 0);
+    this.ctx.fill(this.bars);
+    this.ctx.restore();
 
     this.ctx.save();
     this.ctx.globalCompositeOperation = 'source-atop';
     this.ctx.fillStyle = color;
-    this.ctx.fillRect(0, 0, size, size);
+    this.ctx.fillRect(0, 0, CWIDTH, CHEIGHT);
     this.ctx.restore();
   }
 
   loop = () => {
-    if (this.state.playing) {
-      if (this.frame % this.state.frameRate === 0) {
-        this.draw();
-        this.counter++;
-      }
-      this.frame++;
-
-      requestAnimationFrame(() => this.loop());
+    if (this.frame % this.props.speed === 0) {
+      this.draw(this.counter);
+      this.counter++;
     }
-  }
+    this.frame++;
 
-  getFrame(image, num) {
-    const { size, color, lineWid } = this.state;
-
-    this.ctx.save();
-    this.ctx.clearRect(0, 0, size, size);
-
-    this.ctx.drawImage(image, 0, 0, size, size);
-
-    this.ctx.globalCompositeOperation = 'destination-out';
-
-    this.ctx.translate(num * lineWid, 0);
-    this.ctx.fill(this.bars);
-    this.ctx.restore();
-
-    return imageLoader(this.canvasRef.toDataURL('image/png'));
-  }
-
-  getBars() {
-    const { size, frames, lineWid } = this.state;
-    const block = (frames.length * lineWid) + lineWid;
-    
-    const shape = new Path2D();
-    for (let i = 0; i < (size + block); i += block) {
-      shape.rect(i + lineWid, 0, block - lineWid, size);
-    }
-
-    return shape;
+    this.raf = requestAnimationFrame(this.loop);
   }
 
   render() {
     const { className } = this.props;
-    const { size, loading } = this.state;
 
     const cls = classNames(
       className,
-      'canvas',
-      {
-        'canvas--hide': loading
-      }
+      'canvas'
     );
 
-    return <canvas className={cls} ref={this.getRef} width={`${size}px`} height={`${size}px`}/>;
+    return <canvas className={cls} ref={this.getRef}/>;
   }
 }
 

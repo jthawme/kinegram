@@ -15,6 +15,7 @@ import IconButton from '../Common/Buttons/IconButton';
 
 // CSS, Requires
 import "./Controls.scss";
+import { SPEEDS } from '../App/constants';
 
 class Controls extends React.Component {
   static propTypes = {
@@ -40,7 +41,7 @@ class Controls extends React.Component {
           <ControlsBlock title="Speed">
             <Radioish
               onChange={(option) => this.props.onAttributeChange('speed', option)}
-              options={[1, 2, 5]}
+              options={SPEEDS}
               defaultValue={speed}
               value={speed}/>
           </ControlsBlock>

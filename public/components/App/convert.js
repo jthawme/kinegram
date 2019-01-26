@@ -28,6 +28,7 @@ function convertDataUrlTo1Bit(url) {
         buffer[i] = luma;
         buffer[i + 1] = luma;
         buffer[i + 2] = luma;
+        buffer[i + 3] = luma === 0 ? 255 : 0;
       }
 
       // update canvas with the resulting bitmap data
