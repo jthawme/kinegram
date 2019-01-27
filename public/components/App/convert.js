@@ -24,6 +24,10 @@ function convertDataUrlTo1Bit(url) {
         // test against some threshold
         luma = luma < threshold ? 0 : 255;
 
+        if (buffer[i + 3] == 0) {
+          luma = 255;
+        }
+
         // write result back to all components
         buffer[i] = luma;
         buffer[i + 1] = luma;
