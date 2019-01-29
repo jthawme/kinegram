@@ -6,6 +6,7 @@ import { hot } from 'react-hot-loader/root'
 import classNames from 'classnames';
 import Helmet from 'react-helmet';
 import DropZone from 'react-dropzone';
+import download from 'downloadjs';
 
 // Redux
 
@@ -34,7 +35,12 @@ class App extends React.Component {
     speed: SPEEDS[1],
     images: [],
     disabled: false,
-    loading: false
+    loading: false,
+    recording: false,
+    processing: false,
+    exporting: false,
+
+    controlsHide: false
   }
 
   onAttributeChange = (key, value) => {
@@ -107,14 +113,70 @@ class App extends React.Component {
       return VALID_STATUSES.LOADING;
     }
 
+    if (this.state.processing) {
+      return VALID_STATUSES.PROCESSING;
+    }
+
+    if (this.state.recording) {
+      return VALID_STATUSES.RECORDING;
+    }
+
     return false;
   }
 
+  onStartExporting = () => {
+    this.setState({
+      exporting: true
+    });
+  }
+
+  onStartRecording = () => {
+    this.setState({
+      recording: true,
+      processing: true
+    });
+  }
+
+  onFinishedRecording = () => {
+    this.setState({
+      recording: false
+    });
+  }
+
+  onFinishedProcessing = (blob) => {
+    download(blob, "kinegram.gif", "image/gif");
+
+    this.setState({
+      processing: false
+    });
+  }
+
+  onFinishedExporting = (blob) => {
+    download(blob, "test.png", "image/png");
+
+    this.setState({
+      exporting: false
+    });
+  }
+
+  onToggleControls = () => {
+    this.setState({
+      controlsHide: !this.state.controlsHide
+    });
+  }
+
+  canRecord = () => {
+    return !(this.state.processing || this.state.recording || this.state.images.length === 0);
+  }
+
   render() {
-    const { images, color, speed } = this.state;
+    const { images, color, speed, recording, controlsHide, exporting } = this.state;
 
     const cls = classNames(
-      'app'
+      'app',
+      {
+        'app--hide-controls': controlsHide
+      }
     );
 
     return (
@@ -146,6 +208,11 @@ class App extends React.Component {
                 <input {...getInputProps()} />
                 
                 <Canvas
+                  recording={recording}
+                  exporting={exporting}
+                  onFinishedRecording={this.onFinishedRecording}
+                  onFinishedProcessing={this.onFinishedProcessing}
+                  onFinishedExporting={this.onFinishedExporting}
                   color={color}
                   speed={speed}
                   frames={images}/>
@@ -158,9 +225,13 @@ class App extends React.Component {
           color={color}
           speed={speed}
           images={images}
+          canRecord={this.canRecord()}
           onAttributeChange={this.onAttributeChange}
           onImageAdded={this.onImageAdded}
           onImageRemoved={this.onImageRemoved}
+          onStartExporting={this.onStartExporting}
+          onStartRecording={this.onStartRecording}
+          onToggleControls={this.onToggleControls}
           className="app__controls"/>
 
         <ServiceWorker/>

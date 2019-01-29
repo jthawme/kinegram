@@ -11,6 +11,8 @@
 
   height: 100%;
 
+  overflow: hidden;
+
   &__logo {
     position: fixed;
 
@@ -35,10 +37,10 @@
     align-items: center;
     justify-content: center;
 
-    width: 55vw;
+    width: 65%;
     height: 80%;
 
-    background-color: $color-grey;
+    background-color: #f9f9f9;
 
     &__drop-message {
       @include font-size-x-large;
@@ -73,11 +75,36 @@
     
     position: fixed;
 
-    bottom: rem($outer-padding);
-    left: rem($outer-padding);
-    right: rem($outer-padding);
+    bottom: rem($outer-padding / 2);
+    left: rem($outer-padding / 2);
+    right: rem($outer-padding / 2);
 
     border-radius: rem($global-border-radius);
     background-color: white;
+
+    transition: {
+      duration: 0.35s;
+      property: transform;
+    }
+
+    .app--hide-controls & {
+      transform: translate3d(0, calc(100% + #{rem($outer-padding / 2)}), 0);
+    }
+  }
+
+  @include breakpoint(laptop) {
+    &__canvas {
+      width: 55vw;
+    }
+
+    &__controls {
+      bottom: rem($outer-padding);
+      left: rem($outer-padding);
+      right: rem($outer-padding);
+
+      .app--hide-controls & {
+        transform: translate3d(0, calc(100% + #{rem($outer-padding)}), 0);
+      }
+    }
   }
 }

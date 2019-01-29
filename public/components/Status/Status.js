@@ -12,7 +12,9 @@ import classNames from 'classnames';
 import "./Status.scss";
 
 export const VALID_STATUSES = {
-  LOADING: 'Loading'
+  LOADING: 'Loading',
+  PROCESSING: 'Processing',
+  RECORDING: 'Recording'
 }
 
 class Status extends React.Component {
@@ -46,7 +48,7 @@ class Status extends React.Component {
 
     return (
       <div className={cls}>
-        <span className="status__text">Testing{ command }</span>
+        <span className="status__text">{ command }</span>
         <span className="status__symbol"/>
       </div>
     );

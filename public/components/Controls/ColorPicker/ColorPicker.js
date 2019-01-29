@@ -70,6 +70,7 @@ class ColorPicker extends React.Component {
             <Iconer icon="close" size="xsmall"/>
           </div>
           <BlockPicker 
+            colors={['#000', '#1a237e', '#004d40', '#ff5722']}
             onChangeComplete={this.onChangeComplete}
             color={color}
             triangle="hide"/>

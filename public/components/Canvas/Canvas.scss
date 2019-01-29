@@ -6,4 +6,10 @@
   &--hide {
     opacity: 0;
   }
+
+  &__hidden {
+    position: absolute;
+    transform: scale(0);
+    pointer-events: none;
+  }
 }

@@ -48,6 +48,23 @@
 
     border-radius: 100%;
 
+    transition: {
+      duration: .15s;
+      property: background-color;
+    }
+
+    .status--loading & {
+      background-color: $color-accent;
+    }
+
+    .status--processing & {
+      background-color: #4CAF50;
+    }
+
+    .status--recording & {
+      background-color: #F44336;
+    }
+
     animation: {
       name: PULSE;
       direction: alternate;

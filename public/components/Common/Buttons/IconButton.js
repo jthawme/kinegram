@@ -25,7 +25,7 @@ class IconButton extends React.Component {
   };
 
   render() {
-    const { className, onClick, icon, size } = this.props;
+    const { className, onClick, icon, size, disabled } = this.props;
 
     const cls = classNames(
       className,
@@ -33,7 +33,7 @@ class IconButton extends React.Component {
     );
 
     return (
-      <button onClick={onClick} className={cls}>
+      <button onClick={onClick} className={cls} disabled={disabled}>
         <Iconer icon={icon} size={size}/>
       </button>
     );

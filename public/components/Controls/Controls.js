@@ -16,6 +16,7 @@ import IconButton from '../Common/Buttons/IconButton';
 // CSS, Requires
 import "./Controls.scss";
 import { SPEEDS } from '../App/constants';
+import Iconer from '../Common/Iconer/Iconer';
 
 class Controls extends React.Component {
   static propTypes = {
@@ -23,7 +24,7 @@ class Controls extends React.Component {
   };
 
   render() {
-    const { className, images, color, speed } = this.props;
+    const { className, images, color, speed, onToggleControls, canRecord } = this.props;
 
     const cls = classNames(
       className,
@@ -32,6 +33,10 @@ class Controls extends React.Component {
 
     return (
       <div className={cls}>
+        <button className="controls__close" onClick={onToggleControls}>
+          Toggle Controls <Iconer icon="close" size="xsmall"/>
+        </button>
+
         <div className="controls__modifiers">
           <ControlsBlock title="Color">
             <ColorPicker
@@ -46,21 +51,21 @@ class Controls extends React.Component {
               value={speed}/>
           </ControlsBlock>
         </div>
+
+        <div className="controls__actions">
+          <ControlsBlock title="Gif">
+            <IconButton icon="download" onClick={this.props.onStartRecording} disabled={!canRecord}/>
+          </ControlsBlock>
+          <ControlsBlock title="Export">
+            <IconButton icon="save" onClick={this.props.onStartExporting} disabled={!canRecord}/>
+          </ControlsBlock>
+        </div>
         
         <Timeline
           images={images}
           onImageAdded={this.props.onImageAdded}
           onImageRemoved={this.props.onImageRemoved}
           className="controls__timeline"/>
-
-        <div className="controls__actions">
-          <ControlsBlock title="Gif">
-            <IconButton icon="download" onClick={() => {}}/>
-          </ControlsBlock>
-          <ControlsBlock title="Export">
-            <IconButton icon="save" onClick={() => {}}/>
-          </ControlsBlock>
-        </div>
       </div>
     );
   }

@@ -19,7 +19,7 @@ class ControlsBlock extends React.Component {
   };
 
   render() {
-    const { className, title, children } = this.props;
+    const { className, title, children, disabled } = this.props;
 
     const cls = classNames(
       className,

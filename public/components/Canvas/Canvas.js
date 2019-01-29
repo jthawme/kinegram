@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // 3rd Party Modules
 import classNames from 'classnames';
+import GIF from 'gif.js.optimized';
 
 // Redux
 
@@ -11,8 +12,10 @@ import classNames from 'classnames';
 // CSS, Requires
 import "./Canvas.scss";
 import { imageLoaderManager, imageLoader } from '../../utils/imageLoader';
-import { getIntrinsicHeight } from '../../utils/intrinsic';
+import { getIntrinsicHeight, getIntrinsicWidth } from '../../utils/intrinsic';
 import { getBars } from './Drawing';
+
+const workerScript = require('file-loader!gif.js.optimized/dist/gif.worker.js');
 
 const CWIDTH = 640;
 const CHEIGHT = 480;
@@ -30,6 +33,8 @@ class Canvas extends React.Component {
 
   state = {
     running: true,
+    recording: false,
+    exporting: false,
     imgObjects: []
   }
 
@@ -70,6 +75,22 @@ class Canvas extends React.Component {
           this.props.onLoading(false);
         });
     }
+
+    if (this.props.recording && !oldProps.recording) {
+      this.setState({
+        recording: true
+      }, () => {
+        this.startRecording();
+      });
+    }
+
+    if (this.props.exporting && !oldProps.exporting) {
+      this.setState({
+        exporting: true
+      }, () => {
+        this.startExport();
+      });
+    }
   }
 
   getRef = (ref) => {
@@ -78,6 +99,14 @@ class Canvas extends React.Component {
     if (ref) {
       this.ctx = this.canvas.getContext('2d');
       this.setDimensions(CWIDTH, CHEIGHT);
+    }
+  }
+
+  getHiddenRef = (ref) => {
+    this.hiddenCanvas = ref;
+
+    if (ref) {
+      this.hiddenCtx = this.hiddenCanvas.getContext('2d');
     }
   }
 
@@ -108,8 +137,24 @@ class Canvas extends React.Component {
       this.ctx.clearRect(0, 0, CWIDTH, CHEIGHT);
 
       const h = getIntrinsicHeight(CWIDTH, img.width, img.height);
-      const yOffset = (CHEIGHT - h) / 2;
-      this.ctx.drawImage(img, 0, yOffset, CWIDTH, h);
+      const w = getIntrinsicWidth(CHEIGHT, img.width, img.height);
+
+      let yOffset = 0;
+      let xOffset = 0;
+      let imgH = img.height;
+      let imgW = img.width;
+
+      if (h > CHEIGHT) {
+        imgH = CHEIGHT;
+        imgW = w;
+        xOffset = (CWIDTH - w) / 2;
+      } else {
+        imgW = CWIDTH;
+        imgH = h;
+        yOffset = (CHEIGHT - h) / 2;
+      }
+
+      this.ctx.drawImage(img, xOffset, yOffset, imgW, imgH);
   
       this.ctx.globalCompositeOperation = 'destination-out';
   
@@ -148,6 +193,151 @@ class Canvas extends React.Component {
     });
   }
 
+  startRecording = () => {
+    this.gif = new GIF({
+      workers: 2,
+      quality: 10,
+      workerScript: workerScript
+    });
+
+    this.gifFrames = [];
+
+    this.gif.on('finished', (blob) => {
+      this.props.onFinishedProcessing(blob);
+    });
+
+    this.frame = 0;
+    this.counter = 0;
+  }
+
+  endRecording = () => {
+    this.setState({
+      recording: false
+    });
+
+    this.props.onFinishedRecording();
+
+    imageLoaderManager(this.gifFrames)
+      .then(imgObjects => {
+        imgObjects.forEach(img => {
+          this.gif.addFrame(img, {
+            delay: 15 * this.props.speed
+          });
+        });
+        this.gif.render();
+      });
+  }
+
+  startExport = () => {
+    this.setState({
+      export: true
+    });
+  }
+
+  endExport = () => {
+    this.setState({
+      export: false
+    });
+  }
+
+  drawMark(angle = 0) {
+    this.hiddenCtx.save();
+    // this.hiddenCtx.translate(10, 10);
+    this.hiddenCtx.rotate(angle * Math.PI / 180);
+    this.hiddenCtx.beginPath();
+    this.hiddenCtx.moveTo(10, -10);
+    this.hiddenCtx.lineTo(10, 8);
+    this.hiddenCtx.moveTo(8, 10);
+    this.hiddenCtx.lineTo(-10, 10);
+    this.hiddenCtx.stroke();
+    this.hiddenCtx.restore();
+  }
+
+  drawMarks(width, height) {
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate(((width / 2) * -1), ((height / 2) * -1) - 20);
+    this.drawMark(0);
+    this.hiddenCtx.restore();
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate((width / 2) + 20, ((height / 2) * -1) - 20);
+    this.drawMark(90);
+    this.hiddenCtx.restore();
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate((width / 2) + 20, (height / 2) + 20);
+    this.drawMark(180);
+    this.hiddenCtx.restore();
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate(((width / 2) * -1), (height / 2) + 20);
+    this.drawMark(270);
+    this.hiddenCtx.restore();
+  }
+
+  drawExport = (bars = false) => {
+    const scale = 3;
+    const expWidth = CWIDTH * scale;
+    const expHeight = CHEIGHT * scale;
+
+    this.hiddenCanvas.width = expHeight;
+    this.hiddenCanvas.height = expWidth;
+    // this.hiddenCtx.scale(scale, scale);
+
+    const { cutUp } = this.state;
+    const { frames, color } = this.props;
+
+    this.hiddenCtx.clearRect(0, 0, expWidth, expHeight);
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate(expHeight, 0);
+    this.hiddenCtx.rotate(90 * Math.PI / 180);
+    this.hiddenCtx.save();
+    this.hiddenCtx.translate(expWidth / 2, expHeight / 2);
+
+    if (!bars) {
+      this.hiddenCtx.drawImage(cutUp, (cutUp.width / 2) * -1, (cutUp.height / 2) * -1, cutUp.width, cutUp.height);
+    } else {
+      const block = (frames.length * LINEWID) + LINEWID;
+      this.hiddenCtx.save();
+      this.hiddenCtx.fillStyle = 'black';
+      this.hiddenCtx.translate((CWIDTH + (block / 2)) * -1, -CHEIGHT);
+      this.hiddenCtx.scale(2, 2);
+      this.hiddenCtx.fill(this.bars);
+      this.hiddenCtx.restore();
+    }
+
+    this.drawMarks(cutUp.width, cutUp.height);
+
+    this.hiddenCtx.font = "12px monospace";
+    this.hiddenCtx.fillText(`${frames.length} frames`, ((cutUp.width / 2) * -1) + 50, ((cutUp.height / 2) * -1) - 10);
+
+    this.hiddenCtx.restore();
+    this.hiddenCtx.restore();
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.globalCompositeOperation = 'source-atop';
+    this.hiddenCtx.fillStyle = color;
+    this.hiddenCtx.fillRect(0, 0, expHeight, expWidth);
+    this.hiddenCtx.restore();
+
+    this.hiddenCtx.save();
+    this.hiddenCtx.globalCompositeOperation = "destination-over";
+    this.hiddenCtx.fillStyle = "#ffffff";
+    this.hiddenCtx.fillRect(0, 0, expHeight, expWidth);
+    this.hiddenCtx.restore();
+
+    this.hiddenCanvas.toBlob(blob => {
+      this.props.onFinishedExporting(blob);
+    });
+
+    if (bars) {
+      this.setState({
+        exporting: false
+      });
+    }
+  }
+
   draw = (counter) => {
     const { cutUp } = this.state;
     const { frames, color } = this.props;
@@ -168,16 +358,38 @@ class Canvas extends React.Component {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(0, 0, CWIDTH, CHEIGHT);
     this.ctx.restore();
+
+
+    this.ctx.save();
+    this.ctx.globalCompositeOperation = "destination-over";
+    this.ctx.fillStyle = "#ffffff";
+    this.ctx.fillRect(0, 0, CWIDTH, CHEIGHT);
+    this.ctx.restore();
   }
 
   loop = () => {
-    if (this.frame % this.props.speed === 0) {
+    if (this.state.exporting) {
+      this.drawExport();
+      this.drawExport(true);
+    }
+    else if (this.frame % this.props.speed === 0) {
       this.draw(this.counter);
       this.counter++;
-    }
-    this.frame++;
 
-    this.raf = requestAnimationFrame(this.loop);
+      if (this.state.recording) {
+        // this.gif.addFrame(this.canvas)
+        this.gifFrames.push(this.canvas.toDataURL('image/png'));
+
+        if (this.counter >= this.props.frames.length) {
+          this.endRecording();
+        }
+      }
+    }
+
+    if (!this.state.exporting) {
+      this.frame++;
+      this.raf = requestAnimationFrame(this.loop);
+    }
   }
 
   render() {
@@ -188,7 +400,12 @@ class Canvas extends React.Component {
       'canvas'
     );
 
-    return <canvas className={cls} ref={this.getRef}/>;
+    return (
+      <Fragment>
+        <canvas className={cls} ref={this.getRef}/>
+        <canvas className="canvas__hidden" ref={this.getHiddenRef}/>
+      </Fragment>
+    );
   }
 }
 
