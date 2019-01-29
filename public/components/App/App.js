@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import Helmet from 'react-helmet';
 import DropZone from 'react-dropzone';
 import download from 'downloadjs';
+import JSZip from 'jszip';
 
 // Redux
 
@@ -125,6 +126,8 @@ class App extends React.Component {
   }
 
   onStartExporting = () => {
+    this.exportBlobs = [];
+
     this.setState({
       exporting: true
     });
@@ -152,11 +155,22 @@ class App extends React.Component {
   }
 
   onFinishedExporting = (blob) => {
-    download(blob, "test.png", "image/png");
+    this.exportBlobs.push(blob);
 
-    this.setState({
-      exporting: false
-    });
+    if (this.exportBlobs.length === 2) {
+      const zip = new JSZip();
+      zip.file('design.png', this.exportBlobs[0])
+      zip.file('bars.png', this.exportBlobs[1])
+
+      zip.generateAsync({ type: 'blob' })
+        .then(content => {
+          download(content, "kinegram.zip", "application/zip");
+      
+          this.setState({
+            exporting: false
+          });
+        });
+    }
   }
 
   onToggleControls = () => {
