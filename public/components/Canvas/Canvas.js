@@ -393,16 +393,25 @@ class Canvas extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, parentWidth, parentHeight } = this.props;
 
     const cls = classNames(
       className,
       'canvas'
     );
 
+    const padding = 20;
+    let scaleBy = 1;
+
+    if (CWIDTH > parentHeight) {
+      scaleBy = Math.min(Math.max((parentWidth - padding) / CWIDTH, 0.1), 1);
+    } else {
+      scaleBy = Math.min(Math.max((parentHeight - padding) / CHEIGHT, 0.1), 1);
+    }
+
     return (
       <Fragment>
-        <canvas className={cls} ref={this.getRef}/>
+        <canvas className={cls} ref={this.getRef} style={{ transform: `scale(${scaleBy})` }}/>
         <canvas className="canvas__hidden" ref={this.getHiddenRef}/>
       </Fragment>
     );

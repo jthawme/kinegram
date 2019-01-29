@@ -16,6 +16,8 @@
   &__logo {
     position: fixed;
 
+    z-index: 10;
+
     top: rem($outer-padding);
     left: rem($outer-padding);
 
@@ -42,6 +44,11 @@
 
     background-color: #f9f9f9;
 
+    &:active,
+    &:focus {
+      outline: rem(1px) solid #ccc;
+    }
+
     &__drop-message {
       @include font-size-x-large;
 
@@ -67,6 +74,17 @@
 
         text-align: center;
       }
+    }
+
+    &__measurer {
+      position: absolute;
+
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+
+      pointer-events: none;
     }
   }
 

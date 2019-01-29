@@ -53,6 +53,8 @@
 
   border-radius: rem($global-border-radius);
 
+  outline: none;
+
   transition: {
     property: transform;
     duration: 0.15s;

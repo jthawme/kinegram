@@ -8,6 +8,7 @@ import Helmet from 'react-helmet';
 import DropZone from 'react-dropzone';
 import download from 'downloadjs';
 import JSZip from 'jszip';
+import Measure from 'react-measure'
 
 // Redux
 
@@ -41,7 +42,12 @@ class App extends React.Component {
     processing: false,
     exporting: false,
 
-    controlsHide: false
+    controlsHide: false,
+
+    canvasDimensions: {
+      width: -1,
+      height: -1
+    }
   }
 
   onAttributeChange = (key, value) => {
@@ -184,7 +190,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { images, color, speed, recording, controlsHide, exporting } = this.state;
+    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions } = this.state;
 
     const cls = classNames(
       'app',
@@ -192,6 +198,8 @@ class App extends React.Component {
         'app--hide-controls': controlsHide
       }
     );
+
+    console.log(canvasDimensions);
 
     return (
       <div className={cls}>
@@ -208,32 +216,46 @@ class App extends React.Component {
           className="app__status"
           command={this.getStatus()}/>
 
-        <DropZone accept="image/*" onDrop={this.onDrop}>
-          {({ getRootProps, getInputProps, isDragActive}) => {
-            return (
-              <div
-                {...getRootProps()}
-                className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
-                { isDragActive ? (
-                  <div className="app__canvas__drop-message">
-                    <span>Drop images to add the frames</span>
-                  </div>
-                ) : null }
-                <input {...getInputProps()} />
-                
-                <Canvas
-                  recording={recording}
-                  exporting={exporting}
-                  onFinishedRecording={this.onFinishedRecording}
-                  onFinishedProcessing={this.onFinishedProcessing}
-                  onFinishedExporting={this.onFinishedExporting}
-                  color={color}
-                  speed={speed}
-                  frames={images}/>
-              </div>
-            )
+        <Measure
+          bounds
+          onResize={contentRect => {
+            this.setState({ canvasDimensions: contentRect.bounds })
           }}
-        </DropZone>
+        >
+          {({ measureRef }) => (
+            <DropZone accept="image/*" onDrop={this.onDrop}>
+              {({ getRootProps, getInputProps, isDragActive}) => {
+                return (
+                  <div
+                    {...getRootProps()}
+                    className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
+                    { isDragActive ? (
+                      <div className="app__canvas__drop-message">
+                        <span>Drop images to add the frames</span>
+                      </div>
+                    ) : null }
+
+                    <div className="app__canvas__measurer" ref={measureRef}/>
+
+                    <input {...getInputProps()} />
+                    
+                    <Canvas
+                      parentWidth={canvasDimensions.width}
+                      parentHeight={canvasDimensions.height}
+                      recording={recording}
+                      exporting={exporting}
+                      onFinishedRecording={this.onFinishedRecording}
+                      onFinishedProcessing={this.onFinishedProcessing}
+                      onFinishedExporting={this.onFinishedExporting}
+                      color={color}
+                      speed={speed}
+                      frames={images}/>
+                  </div>
+                )
+              }}
+            </DropZone>
+          )}
+        </Measure>
 
         <Controls
           color={color}

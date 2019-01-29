@@ -11,6 +11,12 @@
 
   cursor: pointer;
 
+  outline: none;
+
+  &:not([disabled]):hover {
+    background-color: darken($color-accent, 10);
+  }
+
   &[disabled] {
     background-color: $color-grey;
 
