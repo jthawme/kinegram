@@ -13,9 +13,8 @@
 
     display: block;
 
-
-    width: rem(24px);
-    height: rem(24px);
+    width: rem(16px);
+    height: rem(16px);
 
     background-color: $color-text;
 
@@ -59,6 +58,13 @@
 
     &--selected:before {
       transform: translate3d(-50%, -50%, 0) scale(1);
+    }
+  }
+
+  @include breakpoint(tabletsmall) {
+    &__radio {
+      width: rem(24px);
+      height: rem(24px);
     }
   }
 }

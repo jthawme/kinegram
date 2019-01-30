@@ -8,10 +8,16 @@
   font-family: inherit;
 
   &__title {
-    @include font-size-regular;
+    @include font-size-small;
 
     padding: 0;
     margin: 0 rem(10px) 0 rem(2px);
+  }
+
+  @include breakpoint(tabletsmall) {
+    &__title {
+      @include font-size-regular;
+    }
   }
 
   @include breakpoint(laptop) {

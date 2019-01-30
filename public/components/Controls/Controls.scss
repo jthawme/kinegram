@@ -46,6 +46,11 @@
 
     > * {
       flex: 0 0 column-width(2, 4);
+      margin-bottom: rem(5px);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -69,7 +74,12 @@
     border-top: rem(1px) solid $color-grey;
   }
 
-  @include breakpoint(phablet) {
+  &__btn {
+    width: rem(24px);
+    height: rem(24px);
+  }
+
+  @include breakpoint(tabletsmall) {
     &__modifiers,
     &__actions {
       flex-direction: row;
@@ -78,11 +88,17 @@
       > * {
         flex: 0 0 column-width(1, 3);
         margin-right: rem($global-padding / 2);
+        margin-bottom: 0;
 
         &:last-child {
           margin-right: 0;
         }
       }
+    }
+
+    &__btn {
+      width: rem(36px);
+      height: rem(36px);
     }
 
     &__modifiers {
@@ -104,6 +120,7 @@
     &__modifiers,
     &__actions {
       justify-content: center;
+      flex-basis: calc((100% - 55vw) / 2);
     }
 
     &__modifiers {

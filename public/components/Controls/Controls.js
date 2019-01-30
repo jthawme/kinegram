@@ -54,10 +54,10 @@ class Controls extends React.Component {
 
         <div className="controls__actions">
           <ControlsBlock title="Gif">
-            <IconButton icon="download" onClick={this.props.onStartRecording} disabled={!canRecord}/>
+            <IconButton className="controls__btn" icon="download" onClick={this.props.onStartRecording} disabled={!canRecord} size="free"/>
           </ControlsBlock>
           <ControlsBlock title="Export">
-            <IconButton icon="save" onClick={this.props.onStartExporting} disabled={!canRecord}/>
+            <IconButton className="controls__btn" icon="save" onClick={this.props.onStartExporting} disabled={!canRecord} size="free"/>
           </ControlsBlock>
         </div>
         
