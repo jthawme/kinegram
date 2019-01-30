@@ -18,6 +18,7 @@ import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
 import Controls from '../Controls/Controls';
 import Status, {VALID_STATUSES} from '../Status/Status';
 import Canvas from '../Canvas/Canvas';
+import Help from '../Help/Help';
 
 // CSS, Requires
 import convertTo1Bit from './convert';
@@ -25,6 +26,7 @@ import { MAX_SLIDES, SPEEDS } from './constants';
 import logoImg from '../../images/logo.png';
 import metaJson from '../../../context/meta.json';
 import "./App.scss";
+import Iconer from '../Common/Iconer/Iconer';
 
 
 
@@ -44,11 +46,35 @@ class App extends React.Component {
     exporting: false,
 
     controlsHide: false,
+    help: (window.location.hash.indexOf('help') >= 0),
 
     canvasDimensions: {
       width: -1,
       height: -1
     }
+  }
+
+  componentDidMount() {
+    this.addKeyListeners();
+  }
+
+  addKeyListeners() {
+    document.addEventListener('keyup', (e) => {
+      // esc
+      if (e.keyCode === 27) {
+        this.onCloseHelp();
+      }
+
+      // x
+      if (e.keyCode === 88) {
+        this.onToggleControls();
+      }
+
+      // /?
+      if (e.keyCode === 191) {
+        this.onOpenHelp();
+      }
+    }, false);
   }
 
   onAttributeChange = (key, value) => {
@@ -206,17 +232,34 @@ class App extends React.Component {
     });
   }
 
+  onOpenHelp = () => {
+    window.location.hash = 'help';
+    this.setState({
+      help: true
+    });
+  }
+
+  onCloseHelp = () => {
+    window.location.hash = '';
+    this.setState({
+      help: false
+    });
+  }
+
   canRecord = () => {
     return !(this.state.processing || this.state.recording || this.state.images.length === 0);
   }
 
   render() {
-    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions } = this.state;
+    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions, help } = this.state;
 
     const cls = classNames(
       'app',
       {
         'app--hide-controls': controlsHide
+      },
+      {
+        'app--help': help
       }
     );
 
@@ -229,11 +272,21 @@ class App extends React.Component {
             {name: 'description', content: metaJson.description}
           ]}/>
 
-        <img className="app__logo" src={logoImg} />
+        <div className="app__logo">
+          <img src={logoImg} />
+
+          <button className="app__help-btn" onClick={this.onOpenHelp}>
+            <Iconer icon="help" size="xsmall"/>
+          </button>
+        </div>
 
         <Status
           className="app__status"
           command={this.getStatus()}/>
+
+        <Help
+          className="app__help"
+          onClose={this.onCloseHelp}/>
 
         <Measure
           bounds

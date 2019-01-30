@@ -18,17 +18,71 @@
 
     z-index: 10;
 
-    top: rem($outer-padding);
-    left: rem($outer-padding);
+    top: rem($outer-padding / 2);
+    left: rem($outer-padding / 2);
 
     width: rem(36px);
+
+    img {
+      width: 100%;
+    }
   }
 
   &__status {
     position: fixed;
 
-    top: rem($outer-padding);
-    right: rem($outer-padding);
+    top: rem($outer-padding / 2);
+    right: rem($outer-padding / 2);
+  }
+
+  &__help {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    z-index: 100;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: {
+      duration: 0.25s;
+      property: opacity, visibility;
+    }
+
+    &-btn {
+      display: block;
+
+      width: 100%;
+
+      padding: 0;
+      margin: 0;
+
+      color: $color-text;
+
+      text-align: center;
+
+      opacity: 0.15;
+
+      cursor: pointer;
+
+      outline: 0;
+
+      &:hover,
+      &:focus,
+      &:active {
+        opacity: 1;
+      }
+    }
+
+    .app--help & {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 
   &__canvas {
@@ -39,8 +93,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 65%;
-    height: 80%;
+    width: calc(100% - #{rem($outer-padding)});
+    height: calc(100% - #{rem($outer-padding)});
 
     background-color: #f9f9f9;
 
@@ -56,6 +110,8 @@
 
       top: 0;
       left: 0;
+
+      z-index: 10;
 
       display: flex;
 
@@ -93,6 +149,8 @@
     
     position: fixed;
 
+    z-index: 10;
+
     bottom: rem($outer-padding / 2);
     left: rem($outer-padding / 2);
     right: rem($outer-padding / 2);
@@ -110,7 +168,24 @@
     }
   }
 
+  @include breakpoint(tablet) {
+    &__canvas {
+      width: 65%;
+      height: 80%;
+    }
+  }
+
   @include breakpoint(laptop) {
+    &__logo {
+      top: rem($outer-padding);
+      left: rem($outer-padding);
+    }
+
+    &__status {
+      top: rem($outer-padding);
+      right: rem($outer-padding);
+    }
+
     &__canvas {
       width: 55vw;
     }
