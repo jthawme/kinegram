@@ -40,7 +40,7 @@
 
     flex-direction: column;
 
-    flex: 1 0 50%;
+    flex: 1 0;
 
     padding: rem($global-padding / 2);
 
@@ -77,6 +77,34 @@
   &__btn {
     width: rem(24px);
     height: rem(24px);
+  }
+
+  @include breakpoint(phablet) {
+    &__modifiers,
+    &__actions {
+      flex-direction: row;
+      flex-basis: auto;
+  
+      > * {
+        flex: 0 0 column-width(1, 3);
+        margin-right: rem($global-padding / 2);
+        margin-bottom: 0;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &__modifiers {
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+  
+    &__actions {
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
   }
 
   @include breakpoint(tabletsmall) {

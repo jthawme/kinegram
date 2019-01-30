@@ -22,6 +22,6 @@ $mobileup: rem(320);
      @media (min-width: $phablet)  { @content ; }
   }
   @else if $point == mobileup {
-     @media (min-width: $mobile)  { @content ; }
+     @media (min-width: $mobileup)  { @content ; }
   }
 }

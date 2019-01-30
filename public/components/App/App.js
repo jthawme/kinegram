@@ -8,7 +8,8 @@ import Helmet from 'react-helmet';
 import DropZone from 'react-dropzone';
 import download from 'downloadjs';
 import JSZip from 'jszip';
-import Measure from 'react-measure'
+import Measure from 'react-measure';
+import ReactGA from 'react-ga';
 
 // Redux
 
@@ -132,6 +133,11 @@ class App extends React.Component {
   }
 
   onStartExporting = () => {
+    ReactGA.event({
+      category: 'User',
+      action: 'Clicked export'
+    });
+
     this.exportBlobs = [];
 
     this.setState({
@@ -140,6 +146,11 @@ class App extends React.Component {
   }
 
   onStartRecording = () => {
+    ReactGA.event({
+      category: 'User',
+      action: 'Clicked record'
+    });
+
     this.setState({
       recording: true,
       processing: true
@@ -153,6 +164,11 @@ class App extends React.Component {
   }
 
   onFinishedProcessing = (blob) => {
+    ReactGA.event({
+      category: 'User',
+      action: 'Downloaded gif'
+    });
+
     download(blob, "kinegram.gif", "image/gif");
 
     this.setState({
@@ -171,6 +187,11 @@ class App extends React.Component {
       zip.generateAsync({ type: 'blob' })
         .then(content => {
           download(content, "kinegram.zip", "application/zip");
+
+          ReactGA.event({
+            category: 'User',
+            action: 'Downloaded export'
+          });
       
           this.setState({
             exporting: false
@@ -198,8 +219,6 @@ class App extends React.Component {
         'app--hide-controls': controlsHide
       }
     );
-
-    console.log(canvasDimensions);
 
     return (
       <div className={cls}>
