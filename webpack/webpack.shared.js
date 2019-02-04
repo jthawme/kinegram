@@ -24,6 +24,10 @@ module.exports = {
       {
         from: 'public/images/social.png',
         to: 'images'
+      },
+      {
+        from: 'context/robots.txt',
+        to: '../'
       }
     ]),
     new HtmlWebpackPlugin({
