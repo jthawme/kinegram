@@ -56,6 +56,18 @@ class App extends React.Component {
 
   componentDidMount() {
     this.addKeyListeners();
+
+    setTimeout(() => {
+      this.setState({
+        ready: true
+      });
+    }, 500);
+
+    setTimeout(() => {
+      this.setState({
+        secondReady: true
+      });
+    }, 1500);
   }
 
   addKeyListeners() {
@@ -250,11 +262,32 @@ class App extends React.Component {
     return !(this.state.processing || this.state.recording || this.state.images.length === 0);
   }
 
+  renderHelp(images) {
+    if (images.length) {
+      return null;
+    }
+
+    return (
+      <div className="app__canvas__message">
+        <Iconer icon="image"/>
+        <p>
+          Drop images here to get started
+        </p>
+      </div>
+    );
+  }
+
   render() {
-    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions, help } = this.state;
+    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions, help, ready, secondReady } = this.state;
 
     const cls = classNames(
       'app',
+      {
+        'app--ready': ready
+      },
+      {
+        'app--second-ready': secondReady
+      },
       {
         'app--hide-controls': controlsHide
       },
@@ -302,10 +335,11 @@ class App extends React.Component {
                     {...getRootProps()}
                     className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
                     { isDragActive ? (
-                      <div className="app__canvas__drop-message">
-                        <span>Drop images to add the frames</span>
+                      <div className="app__canvas__message app__canvas__message--drop">
+                        <Iconer icon="thumbs_up"/>
+                        <p>Drop it!</p>
                       </div>
-                    ) : null }
+                    ) : this.renderHelp(images) }
 
                     <div className="app__canvas__measurer" ref={measureRef}/>
 

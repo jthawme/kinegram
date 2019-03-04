@@ -33,6 +33,8 @@
 
     top: rem($outer-padding / 2);
     right: rem($outer-padding / 2);
+
+    z-index: 1;
   }
 
   &__help {
@@ -57,25 +59,43 @@
     &-btn {
       display: block;
 
-      width: 100%;
+      width: rem(24px);
+      height: rem(24px);
 
       padding: 0;
-      margin: 0;
-
-      color: $color-text;
+      margin: 0 auto;
 
       text-align: center;
-
-      opacity: 0.15;
 
       cursor: pointer;
 
       outline: 0;
 
+      background-color: $color-text;
+      color: $color-grey;
+
+      border-radius: 100%;
+
+      line-height: 0;
+
+      opacity: 0;
+      transform: scale(0.5);
+
+      transition: {
+        duration: 0.35s;
+        property: transform, opacity;
+        timing-function: cubic-bezier(.75,-0.5,0,1.75);
+      }
+
+      .app--second-ready & {
+        opacity: 1;
+        transform: scale(0.85);
+      }
+
       &:hover,
       &:focus,
       &:active {
-        opacity: 1;
+        transform: scale(1);
       }
     }
 
@@ -93,8 +113,8 @@
     align-items: center;
     justify-content: center;
 
-    width: calc(100% - #{rem($outer-padding)});
-    height: calc(100% - #{rem($outer-padding)});
+    width: calc(100% - #{rem($outer-padding * 1.5)});
+    height: calc(100% - #{rem($outer-padding * 1.5)});
 
     background-color: #f9f9f9;
 
@@ -103,8 +123,9 @@
       outline: rem(1px) solid #ccc;
     }
 
-    &__drop-message {
-      @include font-size-x-large;
+    &__message {
+      @include headlineFont;
+      @include font-size-large;
 
       position: absolute;
 
@@ -115,20 +136,45 @@
 
       display: flex;
 
+      flex-direction: column;
       align-items: center;
       justify-content: center;
 
       width: 100%;
       height: 100%;
 
-      border: rem(2px) dashed $color-accent;
-      color: white;
-      background-color: transparentize($color-accent, 0.5);
+      color: darken($color-grey, 10);
 
-      span {
-        width: rem(300px);
+      opacity: 0;
+      transform: scale(0.9);
+
+      transition: {
+        duration: 1s;
+        property: opacity, transform;
+        delay: 1s;
+      }
+
+      .app--second-ready & {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .iconer {
+        width: rem(80px);
+      }
+
+      p {
+        max-width: rem(250px);
+
+        margin: 0;
 
         text-align: center;
+      }
+
+      &--drop {
+        border: rem(2px) dashed $color-accent;
+        color: white;
+        background-color: transparentize($color-accent, 0.5);
       }
     }
 
@@ -158,13 +204,21 @@
     border-radius: rem($global-border-radius);
     background-color: white;
 
+    opacity: 0;
+    transform: translate3d(0, #{rem($global-padding)}, 0);
+
     transition: {
       duration: 0.35s;
-      property: transform;
+      property: transform, opacity;
     }
 
     .app--hide-controls & {
       transform: translate3d(0, calc(100% + #{rem($outer-padding / 2)}), 0);
+    }
+
+    .app--ready & {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
     }
   }
 
@@ -199,5 +253,21 @@
         transform: translate3d(0, calc(100% + #{rem($outer-padding)}), 0);
       }
     }
+  }
+}
+
+@keyframes POPIN {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(0.7);
+    opacity: 1;
   }
 }
