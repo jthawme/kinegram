@@ -1,7 +1,7 @@
 {
     "title": "Kinegram",
-    "short_title": "Kine",
-    "description": "A tool to generate basic kinegrams",
-    "colour": "#ffffff",
+    "short_title": "Kinegram",
+    "description": "A tool to generate analog animations",
+    "colour": "#333333",
     "url": "https://kinegram.app"
 }

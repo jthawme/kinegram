@@ -11,6 +11,7 @@ handlers:
 
   - url: /sw.js
     static_files: sw.js
+    expiration: '0d'
     upload: sw.js
     secure: always
 
