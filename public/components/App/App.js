@@ -1,42 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { hot } from 'react-hot-loader/root'
+import React from "react";
+import PropTypes from "prop-types";
+import { hot } from "react-hot-loader/root";
 
 // 3rd Party Modules
-import classNames from 'classnames';
-import Helmet from 'react-helmet';
-import DropZone from 'react-dropzone';
-import download from 'downloadjs';
-import JSZip from 'jszip';
-import Measure from 'react-measure';
-import ReactGA from 'react-ga';
+import classNames from "classnames";
+import Helmet from "react-helmet";
+import DropZone from "react-dropzone";
+import download from "downloadjs";
+import JSZip from "jszip";
+import Measure from "react-measure";
 
 // Redux
 
 // Components
-import ServiceWorker from '../Common/ServiceWorker/ServiceWorker';
-import Controls from '../Controls/Controls';
-import Status, {VALID_STATUSES} from '../Status/Status';
-import Canvas from '../Canvas/Canvas';
-import Help from '../Help/Help';
+import ServiceWorker from "../Common/ServiceWorker/ServiceWorker";
+import Controls from "../Controls/Controls";
+import Status, { VALID_STATUSES } from "../Status/Status";
+import Canvas from "../Canvas/Canvas";
+import Help from "../Help/Help";
 
 // CSS, Requires
-import convertTo1Bit from './convert';
-import { MAX_SLIDES, SPEEDS } from './constants';
-import logoImg from '../../images/logo.png';
-import metaJson from '../../../context/meta.json';
+import convertTo1Bit from "./convert";
+import { MAX_SLIDES, SPEEDS } from "./constants";
+import logoImg from "../../images/logo.png";
+import metaJson from "../../../context/meta.json";
 import "./App.scss";
-import Iconer from '../Common/Iconer/Iconer';
-
-
+import Iconer from "../Common/Iconer/Iconer";
 
 class App extends React.Component {
   static propTypes = {
-    children: PropTypes.node
-  }
+    children: PropTypes.node,
+  };
 
   state = {
-    color: '#000000',
+    color: "#000000",
     speed: SPEEDS[1],
     images: [],
     disabled: false,
@@ -46,54 +43,58 @@ class App extends React.Component {
     exporting: false,
 
     controlsHide: false,
-    help: (window.location.hash.indexOf('help') >= 0),
+    help: window.location.hash.indexOf("help") >= 0,
 
     canvasDimensions: {
       width: -1,
-      height: -1
-    }
-  }
+      height: -1,
+    },
+  };
 
   componentDidMount() {
     this.addKeyListeners();
 
     setTimeout(() => {
       this.setState({
-        ready: true
+        ready: true,
       });
     }, 500);
 
     setTimeout(() => {
       this.setState({
-        secondReady: true
+        secondReady: true,
       });
     }, 1500);
   }
 
   addKeyListeners() {
-    document.addEventListener('keyup', (e) => {
-      // esc
-      if (e.keyCode === 27) {
-        this.onCloseHelp();
-      }
+    document.addEventListener(
+      "keyup",
+      (e) => {
+        // esc
+        if (e.keyCode === 27) {
+          this.onCloseHelp();
+        }
 
-      // x
-      if (e.keyCode === 88) {
-        this.onToggleControls();
-      }
+        // x
+        if (e.keyCode === 88) {
+          this.onToggleControls();
+        }
 
-      // /?
-      if (e.keyCode === 191) {
-        this.onOpenHelp();
-      }
-    }, false);
+        // /?
+        if (e.keyCode === 191) {
+          this.onOpenHelp();
+        }
+      },
+      false
+    );
   }
 
   onAttributeChange = (key, value) => {
     this.setState({
-      [key]: value
+      [key]: value,
     });
-  }
+  };
 
   onImageAdded = (files, index = false) => {
     this.setState({ disabled: true, loading: true });
@@ -103,16 +104,18 @@ class App extends React.Component {
       _files.push(files[i]);
     }
 
-    Promise.all(_files.map(f => {
-      return this.getFileUrl(f)
-    }))
-      .then(fileUrls => {
-        return fileUrls.filter(f => f);
+    Promise.all(
+      _files.map((f) => {
+        return this.getFileUrl(f);
+      })
+    )
+      .then((fileUrls) => {
+        return fileUrls.filter((f) => f);
       })
       .then(convertTo1Bit)
-      .then(fileUrls => {
+      .then((fileUrls) => {
         const images = this.state.images.slice();
-        
+
         let start = parseInt(index) >= 0 ? index : images.length;
 
         if (start >= MAX_SLIDES) {
@@ -121,26 +124,26 @@ class App extends React.Component {
 
         const left = MAX_SLIDES - start;
         const filtered = fileUrls.slice(0, left);
-        
+
         const args = [start, filtered.length].concat(filtered);
 
         Array.prototype.splice.apply(images, args);
 
         this.setState({ images, disabled: false, loading: false });
       });
-  }
+  };
 
   onImageRemoved = (file, index) => {
     const images = this.state.images.slice();
     images.splice(index, 1);
     this.setState({ images });
-  }
+  };
 
   getFileUrl(file) {
     return new Promise((resolve, reject) => {
-      if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+      if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
         const reader = new FileReader();
-        reader.addEventListener('load', () => {
+        reader.addEventListener("load", () => {
           resolve(reader.result);
         });
         reader.readAsDataURL(file);
@@ -152,7 +155,7 @@ class App extends React.Component {
 
   onDrop = (files) => {
     this.onImageAdded(files);
-  }
+  };
 
   getStatus() {
     if (this.state.disabled) {
@@ -171,96 +174,103 @@ class App extends React.Component {
   }
 
   onStartExporting = () => {
-    ReactGA.event({
-      category: 'User',
-      action: 'Clicked export'
+    window.plausible("User", {
+      props: {
+        action: "Clicked export",
+      },
     });
 
     this.exportBlobs = [];
 
     this.setState({
-      exporting: true
+      exporting: true,
     });
-  }
+  };
 
   onStartRecording = () => {
-    ReactGA.event({
-      category: 'User',
-      action: 'Clicked record'
+    window.plausible("User", {
+      props: {
+        action: "Clicked record",
+      },
     });
 
     this.setState({
       recording: true,
-      processing: true
+      processing: true,
     });
-  }
+  };
 
   onFinishedRecording = () => {
     this.setState({
-      recording: false
+      recording: false,
     });
-  }
+  };
 
   onFinishedProcessing = (blob) => {
-    ReactGA.event({
-      category: 'User',
-      action: 'Downloaded gif'
+    window.plausible("User", {
+      props: {
+        action: "Downloaded gif",
+      },
     });
 
     download(blob, "kinegram.gif", "image/gif");
 
     this.setState({
-      processing: false
+      processing: false,
     });
-  }
+  };
 
   onFinishedExporting = (blob) => {
     this.exportBlobs.push(blob);
 
     if (this.exportBlobs.length === 2) {
       const zip = new JSZip();
-      zip.file('design.png', this.exportBlobs[0])
-      zip.file('bars.png', this.exportBlobs[1])
+      zip.file("design.png", this.exportBlobs[0]);
+      zip.file("bars.png", this.exportBlobs[1]);
 
-      zip.generateAsync({ type: 'blob' })
-        .then(content => {
-          download(content, "kinegram.zip", "application/zip");
+      zip.generateAsync({ type: "blob" }).then((content) => {
+        download(content, "kinegram.zip", "application/zip");
 
-          ReactGA.event({
-            category: 'User',
-            action: 'Downloaded export'
-          });
-      
-          this.setState({
-            exporting: false
-          });
+        window.plausible("User", {
+          props: {
+            action: "Downloaded export",
+          },
         });
+
+        this.setState({
+          exporting: false,
+        });
+      });
     }
-  }
+  };
 
   onToggleControls = () => {
     this.setState({
-      controlsHide: !this.state.controlsHide
+      controlsHide: !this.state.controlsHide,
     });
-  }
+  };
 
   onOpenHelp = () => {
-    window.location.hash = 'help';
+    window.location.hash = "help";
     this.setState({
-      help: true
+      help: true,
     });
-  }
+  };
 
   onCloseHelp = () => {
-    window.location.hash = '';
+    window.location.hash = "";
     this.setState({
-      help: false
+      help: false,
     });
-  }
+  };
 
   canRecord = () => {
-    return !(this.state.processing || this.state.recording || this.state.images.length === 0);
-  }
+    return !(
+      this.state.processing ||
+      this.state.recording ||
+      this.state.images.length === 0
+    );
+  };
 
   renderHelp(images) {
     if (images.length) {
@@ -269,30 +279,39 @@ class App extends React.Component {
 
     return (
       <div className="app__canvas__message">
-        <Iconer icon="image"/>
-        <p>
-          Drop images here to get started
-        </p>
+        <Iconer icon="image" />
+        <p>Drop images here to get started</p>
       </div>
     );
   }
 
   render() {
-    const { images, color, speed, recording, controlsHide, exporting, canvasDimensions, help, ready, secondReady } = this.state;
+    const {
+      images,
+      color,
+      speed,
+      recording,
+      controlsHide,
+      exporting,
+      canvasDimensions,
+      help,
+      ready,
+      secondReady,
+    } = this.state;
 
     const cls = classNames(
-      'app',
+      "app",
       {
-        'app--ready': ready
+        "app--ready": ready,
       },
       {
-        'app--second-ready': secondReady
+        "app--second-ready": secondReady,
       },
       {
-        'app--hide-controls': controlsHide
+        "app--hide-controls": controlsHide,
       },
       {
-        'app--help': help
+        "app--help": help,
       }
     );
 
@@ -301,50 +320,50 @@ class App extends React.Component {
         <Helmet
           titleTemplate={`%s - ${metaJson.name}`}
           defaultTitle={metaJson.name}
-          meta={[
-            {name: 'description', content: metaJson.description}
-          ]}/>
+          meta={[{ name: "description", content: metaJson.description }]}
+        />
 
         <div className="app__logo">
           <img src={logoImg} />
 
           <button className="app__help-btn" onClick={this.onOpenHelp}>
-            <Iconer icon="help" size="xsmall"/>
+            <Iconer icon="help" size="xsmall" />
           </button>
         </div>
 
-        <Status
-          className="app__status"
-          command={this.getStatus()}/>
+        <Status className="app__status" command={this.getStatus()} />
 
-        <Help
-          className="app__help"
-          onClose={this.onCloseHelp}/>
+        <Help className="app__help" onClose={this.onCloseHelp} />
 
         <Measure
           bounds
-          onResize={contentRect => {
-            this.setState({ canvasDimensions: contentRect.bounds })
+          onResize={(contentRect) => {
+            this.setState({ canvasDimensions: contentRect.bounds });
           }}
         >
           {({ measureRef }) => (
             <DropZone accept="image/*" onDrop={this.onDrop}>
-              {({ getRootProps, getInputProps, isDragActive}) => {
+              {({ getRootProps, getInputProps, isDragActive }) => {
                 return (
                   <div
                     {...getRootProps()}
-                    className={classNames('app__canvas', { 'app__canvas--dropping': isDragActive })}>
-                    { isDragActive ? (
+                    className={classNames("app__canvas", {
+                      "app__canvas--dropping": isDragActive,
+                    })}
+                  >
+                    {isDragActive ? (
                       <div className="app__canvas__message app__canvas__message--drop">
-                        <Iconer icon="thumbs_up"/>
+                        <Iconer icon="thumbs_up" />
                         <p>Drop it!</p>
                       </div>
-                    ) : this.renderHelp(images) }
+                    ) : (
+                      this.renderHelp(images)
+                    )}
 
-                    <div className="app__canvas__measurer" ref={measureRef}/>
+                    <div className="app__canvas__measurer" ref={measureRef} />
 
                     <input {...getInputProps()} />
-                    
+
                     <Canvas
                       parentWidth={canvasDimensions.width}
                       parentHeight={canvasDimensions.height}
@@ -355,9 +374,10 @@ class App extends React.Component {
                       onFinishedExporting={this.onFinishedExporting}
                       color={color}
                       speed={speed}
-                      frames={images}/>
+                      frames={images}
+                    />
                   </div>
-                )
+                );
               }}
             </DropZone>
           )}
@@ -374,9 +394,10 @@ class App extends React.Component {
           onStartExporting={this.onStartExporting}
           onStartRecording={this.onStartRecording}
           onToggleControls={this.onToggleControls}
-          className="app__controls"/>
+          className="app__controls"
+        />
 
-        <ServiceWorker/>
+        <ServiceWorker />
       </div>
     );
   }
