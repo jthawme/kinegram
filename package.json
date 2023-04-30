@@ -30,7 +30,7 @@
     "install": "^0.12.2",
     "jszip": "^3.1.5",
     "normalize.css": "^8.0.1",
-    "npm": "^6.5.0",
+    "npm": "^9.6.5",
     "promise-polyfill": "^8.1.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
