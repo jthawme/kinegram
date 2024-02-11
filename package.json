@@ -1,0 +1,39 @@
+{
+	"name": "sveltekit-template",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "npm run assets && vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"lint": "prettier --check .",
+		"format": "prettier --write .",
+		"cms": "npx decap-server",
+		"assets": "jt-factory"
+	},
+	"devDependencies": {
+		"@poppanator/sveltekit-svg": "^4.2.1",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-netlify": "^4.1.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"fs-extra": "^11.2.0",
+		"glob": "^10.3.10",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"sharp-ico": "^0.1.5",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"typescript": "^5.0.0",
+		"vite": "^5.0.3"
+	},
+	"type": "module",
+	"dependencies": {
+		"jt-factory": "^0.1.29",
+		"normalize.css": "^8.0.1",
+		"sass": "^1.70.0",
+		"sharp": "^0.33.2"
+	}
+}

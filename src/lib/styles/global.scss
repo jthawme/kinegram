@@ -1,0 +1,29 @@
+@import 'normalize.css/normalize';
+
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+:root {
+	--font-family-serif: serif;
+	--font-family-sans-serif: sans-serif;
+
+	--font-size-xx-small: 6px;
+	--font-size-x-small: 10px;
+	--font-size-small: 10px;
+	--font-size-normal: 16px;
+	--font-size-medium: 18px;
+	--font-size-large: 24px;
+}
+
+html,
+body {
+	line-height: 1.4;
+	font-family: sans-serif;
+}
+
+img {
+	max-width: 100%;
+}

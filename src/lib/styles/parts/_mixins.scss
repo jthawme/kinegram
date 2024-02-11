@@ -1,0 +1,85 @@
+@mixin small-mobile() {
+	@media screen and (min-width: $small-mobile-breakpoint) {
+		@content;
+	}
+}
+
+@mixin large-mobile() {
+	@media screen and (min-width: $large-mobile-breakpoint) {
+		@content;
+	}
+}
+
+@mixin tablet() {
+	@media screen and (min-width: $tablet-breakpoint) {
+		@content;
+	}
+}
+
+@mixin desktop() {
+	@media screen and (min-width: $desktop-breakpoint) {
+		@content;
+	}
+}
+
+@mixin widescreen() {
+	@media screen and (min-width: $widescreen-breakpoint) {
+		@content;
+	}
+}
+
+@mixin fullhd() {
+	@media screen and (min-width: $fullhd-breakpoint) {
+		@content;
+	}
+}
+
+@mixin between($first, $last) {
+	@media screen and (min-width: $first) and (max-width: $last - 1px) {
+		@content;
+	}
+}
+
+@function vh($quantity) {
+	@return calc(var(--vh, 1vh) * #{$quantity});
+}
+
+@mixin webp($path) {
+	background-image: url($path + '.png');
+
+	.webp & {
+		background-image: url($path + '.webp');
+	}
+}
+
+@mixin hover($not: ':not(.disabled)') {
+	@media (hover: hover) {
+		&#{$not}:hover {
+			@content;
+		}
+	}
+
+	&#{$not}:focus-visible {
+		@content;
+	}
+}
+
+@mixin highdpi() {
+	@media screen and (-webkit-min-device-pixel-ratio: 2),
+		(min-device-pixel-ratio: 2),
+		(min-resolution: 192dpi) {
+		@content;
+	}
+}
+
+@mixin portrait() {
+	@media screen and (orientation: portrait) {
+		@content;
+	}
+}
+
+@mixin landscape() {
+	@media screen and (orientation: landscape) {
+		@content;
+	}
+}
