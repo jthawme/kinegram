@@ -324,6 +324,14 @@
 		.dragOver & {
 			background-color: vaR(--color-accent-mid);
 		}
+
+		@include hover {
+			cursor: pointer;
+
+			.empty-container {
+				color: var(--color-text);
+			}
+		}
 	}
 
 	canvas {

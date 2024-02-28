@@ -21,7 +21,7 @@
 
 		width: 16px;
 
-		color: var(--color-text);
+		color: var(--logo-color, var(--color-text));
 
 		--rotate: 15deg;
 

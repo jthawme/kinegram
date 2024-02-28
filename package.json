@@ -1,6 +1,12 @@
 {
-	"name": "sveltekit-template",
-	"version": "0.0.1",
+	"name": "kinegram",
+	"version": "2.0.0",
+	"description": "A tool to generate analog animations",
+	"author": {
+		"name": "Jonny Thaw",
+		"url": "https://jthaw.me",
+		"email": "hi@jthaw.me"
+	},
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",

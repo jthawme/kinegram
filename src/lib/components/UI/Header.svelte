@@ -59,8 +59,9 @@
 
 	<nav>
 		{#if canShare}
-			<button on:click={onShare}>Share</button>
+			<button class="btn-reset" on:click={onShare}>Share</button>
 		{/if}
+
 		{#if $page.state.shallow}
 			<a on:click={onBack} href="/">Close</a>
 		{:else}
@@ -90,8 +91,10 @@
 
 		font-size: var(--font-size-small);
 
-		a {
+		a,
+		button {
 			color: var(--color-text);
+			cursor: pointer;
 
 			@include hover {
 				color: vaR(--color-accent);
