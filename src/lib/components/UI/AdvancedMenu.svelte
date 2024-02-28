@@ -43,6 +43,9 @@
 	}
 
 	function onCircularChange({ target }) {
+		if (target.checked) {
+			window.plausible('User', { props: { action: 'Used circular' } });
+		}
 		SettingsDispatch('setType', target.checked ? TYPE.CIRCULAR : TYPE.REGULAR);
 	}
 

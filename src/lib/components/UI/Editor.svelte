@@ -25,6 +25,7 @@
 	$: showAdvanced = $Settings.showAdvanced;
 
 	function toggleAdvanced() {
+		window.plausible('User', { props: { action: 'Clicked advance' } });
 		SettingsDispatch('toggleAdvanced');
 	}
 
