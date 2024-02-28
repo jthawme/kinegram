@@ -42,6 +42,18 @@
 	@include tablet {
 		--outer-padding: 30px;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		--color-text: #f2f2f2;
+		--color-bg: #151617;
+		--color-grey-1: #2e2e2e;
+		--color-grey-3: #909090;
+		--color-accent: #2e2e2e;
+		--color-accent-mid: #3e6696;
+		--color-accent-light: #1d497d;
+		--color-accent-light-opacity: rgba(29, 73, 125, 0.95);
+		--color-bg-opacity: rgba(21, 22, 23, 0.9);
+	}
 }
 
 html,
@@ -51,6 +63,7 @@ body {
 	font-weight: 500;
 
 	color: var(--color-text);
+	background-color: var(--color-bg);
 }
 
 body {
