@@ -9,9 +9,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --check .",
-		"format": "prettier --write .",
-		"cms": "npx decap-server",
-		"assets": "jt-factory"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@poppanator/sveltekit-svg": "^4.2.1",
@@ -19,6 +17,7 @@
 		"@sveltejs/adapter-netlify": "^4.1.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/file-saver": "^2.0.7",
 		"fs-extra": "^11.2.0",
 		"glob": "^10.3.10",
 		"prettier": "^3.1.1",
@@ -31,9 +30,12 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"jt-factory": "^0.1.29",
+		"file-saver": "^2.0.5",
+		"gif.js.optimized": "^1.0.1",
+		"jszip": "^3.10.1",
 		"normalize.css": "^8.0.1",
 		"sass": "^1.70.0",
-		"sharp": "^0.33.2"
+		"sharp": "^0.33.2",
+		"short-unique-id": "^5.0.3"
 	}
 }

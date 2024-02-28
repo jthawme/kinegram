@@ -14,12 +14,12 @@
 	export let image = null;
 	// export let favicon = null;
 	/** @type {string} */
-	export let domain = 'https://jthaw.me';
+	export let domain = 'https://kinegram.app';
 
 	/** @type {string} */
-	export let defaultTitle = 'Template';
+	export let defaultTitle = 'Kinegram';
 	/** @type {string} */
-	export let defaultDescription = '';
+	export let defaultDescription = 'A tool to generate analog animations';
 	/** @type {string | null} */
 	export let defaultImage = '/social/social.twitter.png';
 
@@ -88,6 +88,11 @@
 			name: 'og:site_name',
 			property: 'og:site_name',
 			content: formattedTitle
+		},
+		{
+			name: 'keywords',
+			content:
+				'analogue animation, analog animation, barrier grid animation, scanimation, moire animation, animation generator, barrier grid animation generator, scanimation generator, moire animation generator, kinegram, kinegram generator, real life gif, harry potter photos, analogue gif, analog gif'
 		}
 	].filter((item) => !!item);
 </script>
@@ -96,6 +101,12 @@
 	<title>{formattedTitle}</title>
 	<link rel="icon" href="/favicon.ico" />
 	<link rel="manifest" href="/manifest.json" />
+
+	<script
+		defer
+		data-domain="kinegram.app"
+		src="https://plausible.io/js/script.tagged-events.js"
+	></script>
 
 	{#each defaultMeta as tag}
 		<meta {...tag} />

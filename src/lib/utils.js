@@ -1,6 +1,3 @@
-import { page } from '$app/stores';
-import { get } from 'svelte/store';
-
 /**
  * A performant version of a function call, used to keep functions
  * running at 60fps
@@ -354,7 +351,7 @@ export const registerExits = (onEscape) => {
  * @param {HTMLElement} el
  * @param {function} onClickOutside
  * @param {function} [validator]
- * @returns {function} Unlisten
+ * @returns {() => void} Unlisten
  */
 export const clickOutside = (
 	el,
@@ -436,7 +433,94 @@ export const getNth = (arr, idx, total) => {
 
 /**
  *
- * @param {string} slug
- * @returns {boolean}
+ * @param {string} hex
+ * @returns {[number, number, number]}
  */
-export const isActive = (slug) => get(page).url.pathname === slug;
+export function hexToRgb(hex) {
+	hex = hex.replace(/^#?([0-9a-f]{6})$/i, '$1');
+	let num = Number(`0x${hex}`);
+
+	return [
+		(num >> 16) & 0xff, // red
+		(num >> 8) & 0xff, // green
+		num & 0xff // blue
+	];
+}
+
+/**
+ * Gets perceived brightness of pixel
+ *
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @returns {number}
+ */
+export function brightness(r, g, b) {
+	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ *
+ * @param {File} file
+ * @returns {Promise<Blob>}
+ */
+export function fileToBlob(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = (evt) => {
+			const blob = new Blob([evt.target.result], { type: file.type });
+			resolve(blob);
+		};
+		reader.onerror = (err) => reject(err);
+		reader.readAsArrayBuffer(file);
+	});
+}
+
+/**
+ *
+ * @param {number} degrees
+ * @returns {number}
+ */
+export const radians = (degrees) => {
+	return (degrees * Math.PI) / 180;
+};
+
+/**
+ *
+ * @param {number} radians
+ * @returns {number}
+ */
+export const degrees = (radians) => {
+	return (radians * 180) / Math.PI;
+};
+
+/**
+ *
+ * @param {number} angle
+ * @param {{x: number, y: number}} center
+ * @param {number} radius
+ * @returns {{x: number, y: number}}
+ */
+export function circPoint(angle, center, radius) {
+	return {
+		x: center.x + radius * Math.cos(radians(angle)),
+		y: center.y + radius * Math.sin(radians(angle))
+	};
+}
+
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {string} imageType
+ * @param {number} quality
+ */
+export const canvasToBlob = (canvas, imageType = 'image/jpeg', quality = 1) => {
+	return new Promise((resolve) => {
+		canvas.toBlob(
+			(blob) => {
+				resolve(blob);
+			},
+			imageType,
+			quality
+		);
+	});
+};

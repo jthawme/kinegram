@@ -1,5 +1,4 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { TransformServer } from 'jt-factory/vite';
 import svg from '@poppanator/sveltekit-svg';
 import { defineConfig } from 'vite';
 import BuildManifest from './tools/BuildManifest.js';
@@ -7,9 +6,8 @@ import BuildManifest from './tools/BuildManifest.js';
 export default defineConfig({
 	plugins: [
 		sveltekit(),
-		TransformServer(),
 		svg({
-			includePaths: ['./src/lib/icons/'],
+			includePaths: ['./src/lib/icons/', './src/lib/images'],
 			svgoOptions: {
 				multipass: true,
 				plugins: [

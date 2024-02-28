@@ -4,17 +4,20 @@
 
 	import '$lib/styles/global.scss';
 	import Head from '$lib/components/Head.svelte';
-	import { isActive } from '$lib/utils.js';
-
-	/** @type {import('./$types').LayoutData} */
-	export let data;
+	import Header from '$lib/components/UI/Header.svelte';
+	import { ToastManager } from '$lib/toast.js';
+	import ToastGroup from '$lib/components/UI/Toast/Group.svelte';
 
 	async function checkServiceWorker() {
 		const registration = await navigator.serviceWorker.getRegistration();
 
 		if (registration) {
 			registration.addEventListener('updatefound', () => {
-				console.log('Service Worker update found!');
+				ToastManager.add('New version loaded, click to view', {
+					action: () => {
+						window.location.reload();
+					}
+				});
 			});
 		}
 	}
@@ -22,21 +25,12 @@
 	onMount(() => {
 		checkServiceWorker();
 	});
-
-	$: if ($navigating) console.log('Page navigating');
 </script>
 
 <Head />
 
-<header>
-	<ul>
-		<li><a class:active={isActive('/')} href="/">Home</a></li>
-		{#each data.pages as page}
-			<li>
-				<a class:active={isActive(page.meta.slug)} href={page.meta.slug}>{page.attributes.title}</a>
-			</li>
-		{/each}
-	</ul>
-</header>
+<ToastGroup />
+
+<Header />
 
 <slot />

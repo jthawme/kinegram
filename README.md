@@ -1,38 +1,30 @@
-# create-svelte
+# Kinegram 2.0
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A Kinegram _[Barrier grid animation / Scanimation / Moiré Animation]_ is a method of creating animation cheaply and in a static form. [See more about it here.](https://en.wikipedia.org/wiki/Barrier_grid_animation_and_stereography)
 
-## Creating a project
+Drag and drop images onto the canvas to generate your own, then export files to print them out.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## To run
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Install dependences
 
-# create a new project in my-app
-npm create svelte@latest my-app
+```
+npm install
 ```
 
-## Developing
+Run locally
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+```
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+## Whats new
 
-To create a production version of your app:
+This new version of Kinegram brings a lot more control to the interface. As well as general performance upgrades, you now have the ability to change various settings to both the actual process of the animation but also things like the playback.
 
-```bash
-npm run build
-```
+Also, the ability to export full colour kinegrams! And also circular kinegrams! The excitement is palpable
 
-You can preview the production build with `npm run preview`.
+## Roadmap
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- Push the generation of the site onto a webworker. I couldn't work out all of the work to do with transferring a canvas context, PRs would be greatly appreciated
+- Create a CLI version of tool, to use offline

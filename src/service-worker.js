@@ -10,7 +10,7 @@ const ASSETS = [
 	...files // everything in `static`
 ];
 
-console.log('SW', ASSETS);
+// console.log('SW', ASSETS);
 
 self.addEventListener('install', (event) => {
 	// Create a new cache and add all files to it

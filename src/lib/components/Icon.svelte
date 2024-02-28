@@ -1,9 +1,7 @@
 <script>
-	import close from '$lib/icons/close.svg?component';
+	import { icons } from '$lib/icons/index.js';
 
-	const icons = Object.freeze({ close });
-
-	/** @type {keyof icons}*/
+	/** @type {import('../icons').IconName}*/
 	export let name;
 
 	$: icon = icons[name];
@@ -21,5 +19,10 @@
 		height: var(--icon-size, 1em);
 
 		line-height: 1;
+
+		:global(svg) {
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>
