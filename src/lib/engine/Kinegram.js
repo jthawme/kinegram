@@ -73,7 +73,6 @@ export const createRegularFrame = (
 		throw new Error('No context found');
 	}
 	createRegularBars(bCtx, barWidth, width, height, totalFrames, 'white', false);
-	ctx.restore();
 
 	ctx.save();
 	ctx.translate(frameIndex * barWidth, 0);
@@ -200,8 +199,6 @@ export const createCircularFrame = (
 	if (totalFrames === 0) {
 		throw new Error('No frames');
 	}
-
-	ctx.save();
 	const b = new OffscreenCanvas(width, height);
 	const bCtx = b.getContext('2d');
 
@@ -210,8 +207,9 @@ export const createCircularFrame = (
 	}
 
 	createCircularBars(bCtx, barWidth, width, height, totalFrames, 'white', frameIndex, false);
-	ctx.restore();
 
+	ctx.save();
+	ctx.drawImage(b, 0, 0);
 	ctx.globalCompositeOperation = 'source-atop';
 
 	const s = Math.min(width / image.width, height / image.height);
@@ -243,6 +241,8 @@ export const createCircularFrame = (
 
 		ctx.putImageData(id, 0, 0);
 	}
+
+	ctx.restore();
 };
 
 /**
