@@ -21,6 +21,20 @@
 	</section>
 
 	<section>
+		<h2>Example</h2>
+
+		<iframe
+			width="560"
+			height="315"
+			src="https://www.youtube.com/embed/q6tpTdhP2gA?si=zYcVfoogBR9j1rny"
+			title="YouTube video player"
+			frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+			allowfullscreen
+		></iframe>
+	</section>
+
+	<section>
 		<h2>Author</h2>
 
 		<p>
