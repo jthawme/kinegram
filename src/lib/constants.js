@@ -41,6 +41,6 @@ export const BAR_WIDTH_DISPLAY = {
 	[BAR_WIDTH.XLARGE]: '4'
 };
 
-export const KINEGRAM_FRAMES_NAME = `kinegram-frames.png`;
-export const KINEGRAM_BARS_NAME = `kinegram-bars.png`;
-export const KINEGRAM_ZIP_NAME = `kinegram-export.zip`;
+export const KINEGRAM_FRAMES_NAME = `kinegram-frames`;
+export const KINEGRAM_BARS_NAME = `kinegram-bars`;
+export const KINEGRAM_ZIP_NAME = `kinegram-export`;
