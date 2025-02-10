@@ -113,7 +113,7 @@
 
 <style lang="scss">
 	.frame-container {
-		display: flex;
+		display: contents;
 	}
 
 	.frame-outer {
@@ -121,12 +121,12 @@
 
 		display: flex;
 
-		aspect-ratio: var(--ratio, 29.7/21);
-
 		border-radius: 5px;
 
 		overflow: hidden;
 		isolation: isolate;
+		aspect-ratio: var(--ratio, 29.7/21);
+		height: 100%;
 
 		border: 1px solid currentColor;
 		color: var(--color-grey-3);
@@ -142,8 +142,9 @@
 	}
 
 	.frame {
-		width: 100%;
 		height: 100%;
+
+		aspect-ratio: var(--ratio, 29.7/21);
 
 		cursor: pointer;
 
@@ -151,6 +152,7 @@
 			position: absolute;
 			width: 0;
 			height: 0;
+			display: none;
 		}
 
 		img {
