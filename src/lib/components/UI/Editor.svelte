@@ -181,6 +181,80 @@
 		};
 	}
 
+	async function nativeSaveFile(directoryHandle, content, name) {
+		const handle = await directoryHandle.getFileHandle(name, { create: true });
+
+		const writable = await handle.createWritable();
+		// Write the contents of the file to the stream.
+		await writable.write(content);
+		// Close the file and write the contents to disk.
+		await writable.close();
+	}
+
+	function iterateName(name) {
+		const [matches] = [...name.matchAll(/(\d+)-[a-zA-Z]+/g)];
+
+		console.log('iterate', name, matches);
+
+		if (!matches || matches.length === 0) {
+			return [1, name].join('-');
+		}
+
+		return name.replace(/^([0-9]+)/g, parseInt(matches[1]) + 1);
+	}
+
+	/**
+	 *
+	 * @param {string[]} fileNames
+	 * @param {string} name
+	 */
+	function getSafeName(fileNames, name) {
+		const r = new RegExp(`^(?:\d+-)?${name}\.[a-zA-Z]{3,4}`, 'g');
+		const existing = fileNames.find((n) => r.test(n));
+
+		if (!existing) {
+			return name;
+		}
+
+		return getSafeName(fileNames, iterateName(name));
+	}
+
+	// file(?:-\d)?\.[a-zA-Z]{3,4}
+	// (-\d)\.[a-zA-Z]{3,4}
+
+	async function nativeSave(files) {
+		if (!('showOpenFilePicker' in window)) {
+			return Promise.resolve(true);
+		}
+
+		try {
+			const directoryHandle = await window.showDirectoryPicker({
+				options: {
+					startIn: 'downloads'
+				}
+			});
+
+			/** @type {string[]} */
+			const existingFiles = [];
+
+			for await (const [key] of directoryHandle.entries()) {
+				existingFiles.push(key);
+			}
+
+			await Promise.all(
+				files.map(([content, name]) => {
+					nativeSaveFile(
+						directoryHandle,
+						content,
+						[getSafeName(existingFiles, name), 'png'].join('.')
+					);
+				})
+			);
+		} catch (e) {
+			return true;
+		}
+	}
+
 	async function onDownload() {
 		try {
 			UIDispatch('setLoading', true);
@@ -196,8 +270,15 @@
 				const zipContent = await zip.generateAsync({ type: 'blob' });
 				await FileSaver.saveAs(zipContent, KINEGRAM_ZIP_NAME);
 			} else {
-				await FileSaver.saveAs(frames, KINEGRAM_FRAMES_NAME);
-				await FileSaver.saveAs(bars, KINEGRAM_BARS_NAME);
+				const backup = await nativeSave([
+					[frames, KINEGRAM_FRAMES_NAME],
+					[bars, KINEGRAM_BARS_NAME]
+				]);
+
+				if (backup === true) {
+					await FileSaver.saveAs(frames, [KINEGRAM_FRAMES_NAME, 'png'].join('.'));
+					await FileSaver.saveAs(bars, [KINEGRAM_BARS_NAME, 'png'].join('.'));
+				}
 			}
 
 			ToastManager.add('Files downloaded', {
