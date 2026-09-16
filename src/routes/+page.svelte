@@ -12,7 +12,7 @@
 
 {#if $page.state.shallow}
 	<div class="overlay">
-		<AboutPage />
+		<AboutPage shallow />
 	</div>
 {/if}
 
