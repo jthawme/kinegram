@@ -1,6 +1,7 @@
 <script>
 	import { preloadData, pushState, goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { pl } from '$lib/analytics';
 
 	import Logo from '$lib/components/Logo.svelte';
 	import { ToastManager } from '$lib/toast.js';
@@ -36,7 +37,7 @@
 		};
 
 		try {
-			window.plausible('User', { props: { action: 'Share' } });
+			pl('User', { props: { action: 'Share' } });
 			await navigator.share(shareData);
 		} catch (e) {
 			ToastManager.add('Error while sharing', {

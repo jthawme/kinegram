@@ -17,6 +17,7 @@
 	} from '$lib/constants.js';
 	import Icon from '../Icon.svelte';
 	import { clickOutside, doubleRaf } from '$lib/utils.js';
+	import { pl } from '$lib/analytics';
 
 	/** @type {null | HTMLElement}*/
 	let el = null;
@@ -44,7 +45,7 @@
 
 	function onCircularChange({ target }) {
 		if (target.checked) {
-			window.plausible('User', { props: { action: 'Used circular' } });
+			pl('User', { props: { action: 'Used circular' } });
 		}
 		SettingsDispatch('setType', target.checked ? TYPE.CIRCULAR : TYPE.REGULAR);
 	}

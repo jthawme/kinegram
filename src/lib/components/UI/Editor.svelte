@@ -21,11 +21,12 @@
 		TYPE
 	} from '$lib/constants.js';
 	import { ToastManager } from '$lib/toast.js';
+	import { pl } from '$lib/analytics';
 
 	$: showAdvanced = $Settings.showAdvanced;
 
 	function toggleAdvanced() {
-		window.plausible('User', { props: { action: 'Clicked advance' } });
+		pl('User', { props: { action: 'Clicked advance' } });
 		SettingsDispatch('toggleAdvanced');
 	}
 
@@ -185,7 +186,7 @@
 		try {
 			UIDispatch('setLoading', true);
 
-			window.plausible('User', { props: { action: 'Clicked export' } });
+			pl('User', { props: { action: 'Clicked export' } });
 
 			const { frames, bars } = await createDownloadFiles();
 
@@ -204,7 +205,7 @@
 				delay: 3000
 			});
 		} catch (e) {
-			window.plausible('Error', { props: { error: 'download', message: e.message } });
+			pl('Error', { props: { error: 'download', message: e.message } });
 
 			ToastManager.add('Error downloading files', {
 				delay: 3000
@@ -218,7 +219,7 @@
 		try {
 			UIDispatch('setLoading', true);
 
-			window.plausible('User', { props: { action: 'Clicked gif' } });
+			pl('User', { props: { action: 'Clicked gif' } });
 
 			const downsize = 0.5;
 			const { frames, bars } = await createComposites(downsize);
@@ -299,7 +300,7 @@
 
 			gif.render();
 		} catch (e) {
-			window.plausible('Error', { props: { error: 'gif', message: e.message } });
+			pl('Error', { props: { error: 'gif', message: e.message } });
 
 			ToastManager.add('Exporting gif error', {
 				delay: 3000
