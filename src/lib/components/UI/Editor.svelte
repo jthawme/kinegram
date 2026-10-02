@@ -170,7 +170,7 @@
 	 * @returns {Promise<{ frames: Blob, bars: Blob }>}
 	 */
 	async function createDownloadFiles() {
-		const { frames, bars } = await createComposites();
+		const { frames, bars } = await createComposites($Settings.scale);
 
 		const blob = await canvasToBlob(frameCanvas(frames, `${$Frames.total} frames`), 'image/png');
 

@@ -1,5 +1,5 @@
 import { derived, get, writable } from 'svelte/store';
-import { ASPECT, BAR_WIDTH, SPEED, TYPE } from './constants.js';
+import { ASPECT, BAR_WIDTH, DEFAULT_SCALE, SPEED, TYPE } from './constants.js';
 
 const initial = {
 	// Whether to show the advanced menu or not
@@ -32,7 +32,9 @@ const initial = {
 	asSvg: false,
 
 	// The threshold level for the brightness on each pixel
-	threshold: 0.5
+	threshold: 0.5,
+
+	scale: DEFAULT_SCALE
 };
 
 export const store = writable(initial);
@@ -56,7 +58,7 @@ const update = (key, value) => {
 
 /**
  *
- * @param {'toggleAdvanced' | 'setAdvanced' | 'setRetainColour' | 'setColour' | 'setWidth' | 'setSpeed' | 'setSmooth' | 'setAngle' | 'setAspect' | 'setType' | 'setAsZip' | 'setAsSvg' | 'setThreshold' | 'reset' } action
+ * @param {'toggleAdvanced' | 'setAdvanced' | 'setRetainColour' | 'setColour' | 'setWidth' | 'setSpeed' | 'setSmooth' | 'setAngle' | 'setAspect' | 'setType' | 'setAsZip' | 'setAsSvg' | 'setThreshold' | 'reset' | 'setScale' } action
  * @param {any} [data]
  */
 export const dispatch = (action, data) => {
@@ -101,6 +103,9 @@ export const dispatch = (action, data) => {
 			break;
 		case 'setThreshold':
 			update('threshold', data);
+			break;
+		case 'setScale':
+			update('scale', data);
 			break;
 		case 'reset':
 			store.update(() => ({ ...initial }));

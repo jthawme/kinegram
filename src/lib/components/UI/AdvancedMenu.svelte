@@ -13,7 +13,9 @@
 		BAR_WIDTH,
 		BAR_WIDTH_DISPLAY,
 		MAX_MAX_FRAMES,
+		MAX_SCALE,
 		MIN_MAX_FRAMES,
+		MIN_SCALE,
 		SPEED,
 		SPEED_DISPLAY,
 		TYPE
@@ -75,6 +77,10 @@
 
 	function onAngleChange({ target }) {
 		SettingsDispatch('setAngle', target.value);
+	}
+
+	function onScaleChange({ target }) {
+		SettingsDispatch('setScale', parseInt(target.value));
 	}
 
 	function onReset() {
@@ -155,6 +161,14 @@
 
 	<div class="advanced-group">
 		<Group title="Export" direction="row">
+			<RowSlider
+				min={MIN_SCALE}
+				max={MAX_SCALE}
+				title={`Output Scale (${$Settings.scale})`}
+				on:change={onScaleChange}
+				value={$Settings.scale}
+				step={1}
+			/>
 			<RowToggle title="Export as Zip" value={$Settings.asZip} on:change={onAsZipChange} />
 			<!-- <RowToggle title="Export as SVG" value={$Settings.asSvg} on:change={onAsSvgChange} /> -->
 		</Group>
@@ -166,9 +180,9 @@
 		</Group>
 	</div>
 
-	<button class="btn-reset close" on:click={() => SettingsDispatch('setAdvanced', false)}
-		><Icon name="x" /> Close</button
-	>
+	<button class="btn-reset close" on:click={() => SettingsDispatch('setAdvanced', false)}>
+		<Icon name="x" /> Close
+	</button>
 </div>
 
 <style lang="scss">
