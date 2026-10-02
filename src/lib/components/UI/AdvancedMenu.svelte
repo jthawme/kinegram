@@ -6,11 +6,14 @@
 	import RowSlider from '../Row/Slider.svelte';
 
 	import { store as Settings, dispatch as SettingsDispatch } from '$lib/settings.js';
+	import { store as Frames, dispatch as FramesDispatch } from '$lib/frames.js';
 	import {
 		ASPECT,
 		ASPECT_DISPLAY,
 		BAR_WIDTH,
 		BAR_WIDTH_DISPLAY,
+		MAX_MAX_FRAMES,
+		MIN_MAX_FRAMES,
 		SPEED,
 		SPEED_DISPLAY,
 		TYPE
@@ -56,6 +59,10 @@
 
 	function onAsZipChange({ target }) {
 		SettingsDispatch('setAsZip', target.checked);
+	}
+
+	function onMaxFramesChange({ target }) {
+		FramesDispatch('alter', parseInt(target.value));
 	}
 
 	function onAsSvgChange({ target }) {
@@ -134,6 +141,19 @@
 	</div>
 
 	<div class="advanced-group">
+		<Group title="Frames" subtitle="> 8 might get weird" direction="row">
+			<RowSlider
+				min={MIN_MAX_FRAMES}
+				max={MAX_MAX_FRAMES}
+				title={`Max amount (${$Frames.maxFrames})`}
+				on:change={onMaxFramesChange}
+				value={$Frames.maxFrames}
+				step={1}
+			/>
+		</Group>
+	</div>
+
+	<div class="advanced-group">
 		<Group title="Export" direction="row">
 			<RowToggle title="Export as Zip" value={$Settings.asZip} on:change={onAsZipChange} />
 			<!-- <RowToggle title="Export as SVG" value={$Settings.asSvg} on:change={onAsSvgChange} /> -->
@@ -176,7 +196,7 @@
 			property: transform, visibility;
 		}
 
-		max-height: calc(100dvh - 250px);
+		max-height: calc(100dvh - 300px);
 		overflow: auto;
 
 		@include tablet {

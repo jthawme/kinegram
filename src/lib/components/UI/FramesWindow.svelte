@@ -1,11 +1,12 @@
 <script>
 	import TrackFrame from '$lib/components/Track/Frame.svelte';
 	import TrackRunner from '$lib/components/Track/Runner.svelte';
-	import { MAX_FRAMES } from '$lib/constants.js';
 	import { store as Frames, dispatch as FramesDispatch } from '$lib/frames.js';
 	import Icon from '../Icon.svelte';
 
-	$: fullFrames = new Array(MAX_FRAMES).fill(null).map((_, idx) => $Frames.frames[idx] ?? null);
+	$: fullFrames = new Array($Frames.maxFrames)
+		.fill(null)
+		.map((_, idx) => $Frames.frames[idx] ?? null);
 
 	/** @type {HTMLDivElement | null} */
 	let inner = null;
@@ -57,7 +58,7 @@
 					on:file={({ detail }) => onFile(detail, idx)}
 					on:remove={({ detail }) => onFileRemove(idx)}
 					on:duplicate={() => onFileDuplicate(idx)}
-					canDuplicate={$Frames.total < MAX_FRAMES}
+					canDuplicate={$Frames.total < $Frames.maxFrames}
 				/>
 			{/each}
 		</TrackRunner>

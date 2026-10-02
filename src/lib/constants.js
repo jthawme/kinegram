@@ -25,7 +25,9 @@ export const TYPE = {
 	CIRCULAR: 'circular'
 };
 
-export const MAX_FRAMES = 8;
+export const MIN_MAX_FRAMES = 8;
+export const DEFAULT_MAX_FRAMES = 8;
+export const MAX_MAX_FRAMES = 24;
 
 export const BAR_WIDTH = {
 	SMALL: 0.5,

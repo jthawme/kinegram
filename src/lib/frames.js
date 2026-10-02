@@ -1,14 +1,17 @@
 import { derived, get, writable } from 'svelte/store';
+import { DEFAULT_MAX_FRAMES } from './constants';
 
 /** @type {Blob[]} */
 const initial = [];
 
+const maxFrames = writable(DEFAULT_MAX_FRAMES);
 const frames = writable(initial);
 
-export const store = derived([frames], ([$frames]) => {
+export const store = derived([frames, maxFrames], ([$frames, $maxFrames]) => {
 	return {
 		frames: $frames,
-		total: $frames.length
+		total: $frames.length,
+		maxFrames: $maxFrames
 	};
 });
 
@@ -51,7 +54,17 @@ const remove = (idx) => {
 
 /**
  *
- * @param {'add' | 'remove' | 'replace'} action
+ * @param {number} number
+ */
+const alterMaxFrames = (number) => {
+	maxFrames.update(() => {
+		return number;
+	});
+};
+
+/**
+ *
+ * @param {'add' | 'remove' | 'replace' | 'alter'} action
  * @param {any} [data]
  */
 export const dispatch = (action, data) => {
@@ -66,6 +79,9 @@ export const dispatch = (action, data) => {
 			break;
 		case 'replace':
 			replace(data.index, data.value);
+			break;
+		case 'alter':
+			alterMaxFrames(data);
 			break;
 	}
 };
