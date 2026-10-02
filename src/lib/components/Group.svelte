@@ -2,13 +2,19 @@
 	/** @type {string | null}*/
 	export let title = null;
 
+	/** @type {string | null}*/
+	export let subtitle = null;
+
 	/** @type {'column' | 'row'} */
 	export let direction = 'column';
 </script>
 
 <div class={`group ${direction}`}>
-	{#if title}
-		<span class="title">{title}</span>
+	{#if title || subtitle}
+		<span class="top">
+			{#if title}<span class="title">{title}</span>{/if}
+			{#if subtitle}<span class="subtitle">{subtitle}</span>{/if}
+		</span>
 	{/if}
 
 	<div class="content">
@@ -29,15 +35,23 @@
 		padding: 15px 20px;
 	}
 
-	.title,
+	.top,
 	.footer {
 		display: inline-block;
 
 		font-size: var(--font-size-x-small);
 	}
 
-	.title {
+	.top {
+		display: flex;
+
+		justify-content: space-between;
+
 		padding-bottom: 5px;
+	}
+
+	.subtitle {
+		color: var(--color-accent);
 	}
 
 	.footer {

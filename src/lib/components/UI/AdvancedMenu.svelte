@@ -6,11 +6,16 @@
 	import RowSlider from '../Row/Slider.svelte';
 
 	import { store as Settings, dispatch as SettingsDispatch } from '$lib/settings.js';
+	import { store as Frames, dispatch as FramesDispatch } from '$lib/frames.js';
 	import {
 		ASPECT,
 		ASPECT_DISPLAY,
 		BAR_WIDTH,
 		BAR_WIDTH_DISPLAY,
+		MAX_MAX_FRAMES,
+		MAX_SCALE,
+		MIN_MAX_FRAMES,
+		MIN_SCALE,
 		SPEED,
 		SPEED_DISPLAY,
 		TYPE
@@ -58,6 +63,10 @@
 		SettingsDispatch('setAsZip', target.checked);
 	}
 
+	function onMaxFramesChange({ target }) {
+		FramesDispatch('alter', parseInt(target.value));
+	}
+
 	function onAsSvgChange({ target }) {
 		SettingsDispatch('setAsSvg', target.checked);
 	}
@@ -68,6 +77,10 @@
 
 	function onAngleChange({ target }) {
 		SettingsDispatch('setAngle', target.value);
+	}
+
+	function onScaleChange({ target }) {
+		SettingsDispatch('setScale', parseInt(target.value));
 	}
 
 	function onReset() {
@@ -134,7 +147,28 @@
 	</div>
 
 	<div class="advanced-group">
+		<Group title="Frames" subtitle="> 8 might get weird" direction="row">
+			<RowSlider
+				min={MIN_MAX_FRAMES}
+				max={MAX_MAX_FRAMES}
+				title={`Max amount (${$Frames.maxFrames})`}
+				on:change={onMaxFramesChange}
+				value={$Frames.maxFrames}
+				step={1}
+			/>
+		</Group>
+	</div>
+
+	<div class="advanced-group">
 		<Group title="Export" direction="row">
+			<RowSlider
+				min={MIN_SCALE}
+				max={MAX_SCALE}
+				title={`Output Scale (${$Settings.scale})`}
+				on:change={onScaleChange}
+				value={$Settings.scale}
+				step={1}
+			/>
 			<RowToggle title="Export as Zip" value={$Settings.asZip} on:change={onAsZipChange} />
 			<!-- <RowToggle title="Export as SVG" value={$Settings.asSvg} on:change={onAsSvgChange} /> -->
 		</Group>
@@ -146,9 +180,9 @@
 		</Group>
 	</div>
 
-	<button class="btn-reset close" on:click={() => SettingsDispatch('setAdvanced', false)}
-		><Icon name="x" /> Close</button
-	>
+	<button class="btn-reset close" on:click={() => SettingsDispatch('setAdvanced', false)}>
+		<Icon name="x" /> Close
+	</button>
 </div>
 
 <style lang="scss">
@@ -176,7 +210,7 @@
 			property: transform, visibility;
 		}
 
-		max-height: calc(100dvh - 250px);
+		max-height: calc(100dvh - 300px);
 		overflow: auto;
 
 		@include tablet {

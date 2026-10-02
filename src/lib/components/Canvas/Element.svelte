@@ -13,7 +13,6 @@
 	import { createBars, createComposite, createFrame } from '$lib/engine/Kinegram.js';
 	import Icon from '../Icon.svelte';
 	import { debounce, doubleRaf, fileToBlob } from '$lib/utils.js';
-	import { MAX_FRAMES } from '$lib/constants.js';
 	import { ToastManager } from '$lib/toast.js';
 
 	export let canvasWidth = 1920;
@@ -209,12 +208,15 @@
 		UIDispatch('setLoading', true);
 		const blobs = await Promise.all(
 			files
-				.slice(0, $Frames.total < MAX_FRAMES ? MAX_FRAMES - $Frames.total : MAX_FRAMES)
+				.slice(
+					0,
+					$Frames.total < $Frames.maxFrames ? $Frames.maxFrames - $Frames.total : $Frames.maxFrames
+				)
 				.map(fileToBlob)
 		);
 
 		if (blobs.length) {
-			if ($Frames.total >= MAX_FRAMES) {
+			if ($Frames.total >= $Frames.maxFrames) {
 				blobs.forEach((blob, idx) => FramesDispatch('replace', { index: idx, value: blob }));
 			} else {
 				blobs.forEach((blob) => FramesDispatch('add', blob));
